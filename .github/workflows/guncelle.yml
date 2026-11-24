@@ -27,6 +27,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Resim donusturucuyu kur
+        run: pip install --quiet pillow
       - name: XML'i indir, iyzico linklerini esitle, urunler.json olustur
         env:
           XML_URL: ${{ secrets.XML_URL }}

@@ -112,6 +112,22 @@ def _png(r=214, g=180, b=138, w=600):
 _gorsel_onbellek = {}
 
 
+def _jpg_png_yap(veri):
+    """iyzico sadece JPG/PNG kabul ediyor. WebP vb. ise JPG'ye çevirir; çevrilemezse None."""
+    if veri[:3] == b"\xff\xd8\xff" or veri[:8] == b"\x89PNG\r\n\x1a\n":
+        return veri
+    try:
+        import io
+        from PIL import Image
+        im = Image.open(io.BytesIO(veri)).convert("RGB")
+        im.thumbnail((1200, 1200))
+        out = io.BytesIO()
+        im.save(out, "JPEG", quality=85)
+        return out.getvalue()
+    except Exception:
+        return None
+
+
 def gorsel_b64(urun):
     url = (urun.get("resim") or [None])[0]
     if url in _gorsel_onbellek:
@@ -126,6 +142,7 @@ def gorsel_b64(urun):
                 veri = None
         except Exception:
             veri = None
+    veri = _jpg_png_yap(veri) if veri else None
     sonuc = base64.b64encode(veri or _png()).decode()
     _gorsel_onbellek[url] = sonuc
     return sonuc
