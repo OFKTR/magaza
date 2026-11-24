@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Adım Ayakkabı</title>
+<meta name="description" content="Erkek ayakkabı, bot ve terlik. Ücretsiz kargo, kolay değişim, kartla güvenli ödeme.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday shop, friendly and direct, a shoe store run from a phone
+   IDEA a shoebox shelf: kraft-brown box lids, black print, a green pay stamp
+   PICTURE the live catalogue itself, each pair standing on its kraft lid; drawn pair when no photo
+   COLOUR white ground, black ink, kraft #d6b48a fields, green #1a9e4b for paying
+   TYPE Archivo expanded 800 for titles + Archivo for text
+   LAYOUT slim nav, short title band with three promises, filters, grid 4/3/2, steps, delivery, footer */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#141210);--ink:light-dark(#141210,#f3ede5);--soft:light-dark(#5d544b,#bdb2a5);--kraft:light-dark(#d6b48a,#6b5338);--kraft2:light-dark(#efe0cb,#2a221a);--card:light-dark(#ffffff,#1d1915);--line:light-dark(#e6dccd,#3a3027);--wa:#1a9e4b;--warn:light-dark(#c2410c,#fb923c)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Archivo,system-ui,sans-serif;overflow-x:clip}
+img{max-width:100%}
+a{color:inherit}
+h1,h2,h3{font-stretch:118%;font-weight:800;letter-spacing:-.02em;line-height:1.05;margin:0}
+h1{font-size:clamp(32px,5vw,50px);text-wrap:balance}
+h2{font-size:clamp(26px,3.4vw,36px);margin-bottom:18px}
+h3{font-size:17px;letter-spacing:-.01em;line-height:1.2}
+.band{padding-block:clamp(28px,4vw,56px);padding-left:max(5vw,16px);padding-right:max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+nav{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:4px 22px;padding:12px max(5vw,16px)}
+.logo{font-stretch:125%;font-weight:800;font-size:22px;letter-spacing:-.03em;text-decoration:none;margin-right:auto}
+.logo span{display:inline-block;background:var(--kraft);padding:0 6px;margin-left:4px;border-radius:3px}
+nav a.l{text-decoration:none;font-weight:600;font-size:15px;padding:10px 0}
+nav a.l:hover{text-decoration:underline}
+.demo{background:var(--ink);color:var(--bg);text-align:center;font-size:14px;padding:8px 16px}
+.top{background:var(--kraft2)}
+.top .wrap{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:28px;align-items:end}
+.top p{font-size:17px;color:var(--soft);margin:14px 0 0;max-width:56ch}
+.prom{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.prom li{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-weight:600}
+.prom b{flex:none;width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:15px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px}
+#cats{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:600 15px Archivo,sans-serif;min-height:44px;padding:0 16px;border-radius:22px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap}
+.chip small{font-weight:500;opacity:.65;margin-left:4px}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--wa);outline-offset:2px}
+.ctl{display:flex;gap:10px;margin-left:auto;flex-wrap:nowrap}
+.f{font:16px Archivo,sans-serif;min-height:44px;padding:0 14px;border:1.5px solid var(--line);border-radius:22px;background:var(--card);color:var(--ink)}
+#q{width:min(240px,100%)}
+.count{font-size:14px;color:var(--soft);margin:-8px 0 16px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.card{font:inherit;color:inherit;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;padding:0;cursor:pointer}
+.shelf{background:var(--kraft);position:relative;aspect-ratio:1/1;display:grid;place-items:center;overflow:hidden}
+.shelf img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.shelf svg{width:86%;height:auto;transition:transform .4s ease}
+.card:hover .shelf img{transform:scale(1.04)}
+.card:hover .shelf svg{transform:translateY(-4px) rotate(-2deg)}
+.tag{position:absolute;top:10px;left:10px;background:var(--bg);color:var(--ink);font-size:13px;font-weight:700;padding:3px 9px;border-radius:4px}
+.off{position:absolute;top:10px;right:10px;background:var(--wa);color:#fff;font-size:13px;font-weight:800;padding:3px 9px;border-radius:4px}
+.body{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.code{font-size:13px;color:var(--soft);font-weight:600}
+.pr{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.price{font-stretch:115%;font-weight:800;font-size:21px;white-space:nowrap}
+.old{font-size:14px;color:var(--soft);text-decoration:line-through;white-space:nowrap}
+.sz-mini{font-size:13px;color:var(--soft)}
+.more{display:block;margin:26px auto 0;font:700 15px Archivo,sans-serif;min-height:48px;padding:0 28px;border-radius:24px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.empty{grid-column:1/-1;padding:40px;text-align:center;border:1.5px dashed var(--line);border-radius:12px;color:var(--soft)}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;list-style:none;padding:0;margin:0}
+.steps li{border-top:4px solid var(--ink);padding-top:14px}
+.steps .n{font-stretch:125%;font-weight:800;font-size:40px;line-height:1;margin-bottom:6px}
+.steps p,.info p{margin:8px 0 0;color:var(--soft)}
+.alt{background:var(--kraft2)}
+.info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+footer{background:var(--ink);color:var(--bg)}
+footer .wrap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+footer p{margin:6px 0 0;opacity:.8}
+.ov{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center}
+.ov.on{display:flex}
+.sheet{background:var(--bg);color:var(--ink);width:min(560px,100%);max-height:94vh;overflow:auto;border-radius:16px 16px 0 0;padding:20px max(4vw,16px) 26px}
+.sheet.wide{width:min(980px,100%)}
+.sh-h{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.x{flex:none;font:700 22px Archivo,sans-serif;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.det{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px}
+.gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:12px;background:var(--kraft);aspect-ratio:1/1}
+.gal>*{flex:0 0 100%;scroll-snap-align:start;display:grid;place-items:center}
+.gal img{width:100%;height:100%;object-fit:cover}
+.gal svg{width:86%}
+.gnav{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:14px;color:var(--soft)}
+.gnav button{font:700 18px Archivo,sans-serif;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.sizes{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+.sz{font:600 15px Archivo,sans-serif;min-width:48px;min-height:48px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.sz[aria-pressed=true]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.sz:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}
+.hint{font-size:14px;color:var(--warn);min-height:20px;margin:0}
+.big{display:flex;align-items:center;justify-content:center;text-decoration:none;width:100%;font:800 16px Archivo,sans-serif;min-height:54px;border-radius:27px;border:0;background:var(--wa);color:#fff;cursor:pointer;margin-top:8px}
+.big[aria-disabled=true]{background:var(--line);color:var(--soft);pointer-events:none}
+.secure{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13px;color:var(--soft);margin:10px 0 0}
+.big.ok{background:var(--wa)}
+.desc{white-space:pre-line;color:var(--soft);font-size:15px;margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
+@media(min-width:760px){.ov{align-items:center}.sheet{border-radius:16px}}
+@media(max-width:980px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.top .wrap,.info,footer .wrap,.det{grid-template-columns:minmax(0,1fr)}.ctl{margin-left:0;width:100%}#q{flex:1}}
+@media(max-width:600px){.top p{font-size:15px}.prom li{padding:8px 12px;font-size:15px}.prom b{width:28px;height:28px}.steps{grid-template-columns:minmax(0,1fr)}nav a.l{font-size:14px}.body{padding:12px}.price{font-size:18px}h3{font-size:15px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="sneaker" viewBox="0 0 220 120"><ellipse cx="112" cy="106" rx="98" ry="7" fill="#000" opacity=".18"/><path d="M14 84Q12 101 30 101L194 101Q210 100 208 84Z" fill="var(--s)"/><line x1="20" y1="93" x2="204" y2="93" stroke="#000" stroke-opacity=".14" stroke-width="2"/><path d="M18 84L22 58Q26 44 44 42L68 40Q86 21 112 24L126 26Q134 41 152 52L186 63Q206 69 206 84Z" fill="var(--u)"/><path d="M68 40Q86 21 112 24L126 26" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="3"/><path d="M152 52L186 63Q206 69 206 84L170 84Q168 66 150 58Z" fill="#000" opacity=".12"/><g stroke="var(--l)" stroke-width="4" stroke-linecap="round"><line x1="104" y1="34" x2="116" y2="30"/><line x1="112" y1="42" x2="125" y2="38"/><line x1="121" y1="50" x2="134" y2="46"/></g></symbol>
+<symbol id="boot" viewBox="0 0 220 120"><ellipse cx="112" cy="106" rx="98" ry="7" fill="#000" opacity=".18"/><path d="M20 82L20 102L206 102Q210 92 206 82Z" fill="var(--s)"/><path d="M24 84L26 26Q28 8 46 8L92 8Q102 8 102 20L106 48Q122 55 152 59L186 65Q207 71 206 84Z" fill="var(--u)"/><path d="M46 8L92 8Q102 8 102 20" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="3"/><path d="M152 59L186 65Q207 71 206 84L168 84Q166 68 148 63Z" fill="#000" opacity=".12"/><g stroke="var(--l)" stroke-width="4" stroke-linecap="round"><line x1="90" y1="22" x2="104" y2="20"/><line x1="92" y1="33" x2="106" y2="31"/><line x1="94" y1="44" x2="108" y2="42"/></g></symbol>
+<symbol id="loafer" viewBox="0 0 220 120"><ellipse cx="112" cy="104" rx="98" ry="7" fill="#000" opacity=".18"/><path d="M16 86L16 98L206 98Q210 92 206 86Z" fill="var(--s)"/><path d="M18 88Q14 62 40 58L96 54Q130 50 160 59L190 70Q208 77 206 88Z" fill="var(--u)"/><path d="M96 54Q130 50 160 59" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/><path d="M118 60Q150 56 176 70Q160 76 130 74Z" fill="none" stroke="var(--l)" stroke-width="2.5" stroke-dasharray="4 4"/><rect x="120" y="62" width="26" height="6" rx="3" fill="var(--l)"/></symbol>
+<symbol id="slipper" viewBox="0 0 220 120"><ellipse cx="112" cy="104" rx="98" ry="7" fill="#000" opacity=".18"/><path d="M12 86Q12 98 26 98L196 98Q210 98 210 86Z" fill="var(--s)"/><path d="M12 86L210 86L210 80L12 80Z" fill="var(--s)" opacity=".7"/><path d="M66 84Q74 44 118 42Q160 44 168 84Z" fill="var(--u)"/><path d="M78 62Q92 48 118 47Q146 48 158 62" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/><path d="M84 72L152 72" stroke="var(--l)" stroke-width="2.5" stroke-dasharray="4 4"/></symbol>
+</defs></svg>
+
+<div class="demo" id="demo" hidden>Bu örnek katalogdur. Gerçek XML bağlanınca tüm ürünler, fotoğraflar ve stoklar otomatik gelir.</div>
+<nav><div class="wrap">
+<a class="logo" href="#urunler" id="logo">Adım<span>Ayakkabı</span></a>
+<a class="l" href="#urunler">Ürünler</a>
+<a class="l" href="#nasil">Nasıl sipariş verilir</a>
+<a class="l" href="#teslimat">Teslimat ve iade</a>
+<a class="l" href="#iletisim">İletişim</a>
+</div></nav>
+
+<header class="band top"><div class="wrap">
+<div>
+<h1>Erkek ayakkabı ve botlar, ücretsiz kargoyla kapında</h1>
+<p>Modelini ve numaranı seç, kartınla güvenle öde. Ödeme iyzico güvencesiyle alınır, kart bilgin bizde saklanmaz. Stoklar birkaç saatte bir güncellenir; gördüğün numara stokta demektir.</p>
+</div>
+<ul class="prom">
+<li><b>1</b>Türkiye'nin her yerine ücretsiz kargo</li>
+<li><b>2</b>iyzico ile güvenli kartla ödeme</li>
+<li><b>3</b>Numara olmazsa değişim, 14 gün iade hakkı</li>
+</ul>
+</div></header>
+
+<main>
+<section class="band" id="urunler"><div class="wrap">
+<h2>Ürünler</h2>
+<div class="tools">
+<div id="cats" role="group" aria-label="Kategori"></div>
+<div class="ctl">
+<input class="f" id="q" type="search" placeholder="Model ara, ör. CH257" aria-label="Model ara">
+<select class="f" id="sort" aria-label="Sırala"><option value="on">Önerilen</option><option value="ucuz">Fiyat: artan</option><option value="pahali">Fiyat: azalan</option><option value="stok">En çok stoklu</option></select>
+</div>
+</div>
+<p class="count" id="count">Ürünler yükleniyor…</p>
+<div class="grid" id="grid"></div>
+<button class="more" id="more" type="button" hidden>Daha fazla göster</button>
+</div></section>
+
+<section class="band alt" id="nasil"><div class="wrap">
+<h2>Nasıl sipariş verilir</h2>
+<ol class="steps">
+<li><div class="n">1</div><h3>Seç</h3><p>Ürüne dokun ve stokta olan numaranı işaretle. Silik numaralar tükenmiştir.</p></li>
+<li><div class="n">2</div><h3>Kartla öde</h3><p>"Kartla öde" butonu iyzico'nun güvenli ödeme sayfasını açar. Adresini ve kart bilgini orada girersin.</p></li>
+<li><div class="n">3</div><h3>Teslim al</h3><p>Siparişin 1–3 iş günü içinde kargoya verilir, kargo takip bilgisi sana iletilir.</p></li>
+</ol>
+</div></section>
+
+<section class="band" id="teslimat"><div class="wrap">
+<h2>Teslimat ve iade</h2>
+<div class="info">
+<div class="box"><h3>Teslimat</h3><p>Türkiye'nin 81 iline kargo ücretsizdir. Ödeme kredi veya banka kartıyla, iyzico'nun güvenli ödeme sayfasında alınır. Siparişler genellikle 1–3 iş günü içinde kargoya verilir.</p></div>
+<div class="box"><h3>Değişim ve iade</h3><p>Numara olmadıysa değişim yapıyoruz. Mesafeli satışta teslimattan sonraki 14 gün içinde giyilmemiş ve kutusunda olan ürünü iade edebilirsin. İade ve değişim için telefon veya e-posta ile ulaşman yeterli.</p></div>
+</div>
+</div></section>
+</main>
+
+<footer class="band" id="iletisim"><div class="wrap">
+<div><h3 id="fname">Adım Ayakkabı</h3><p>Yetkili bayi. Erkek ayakkabı, bot ve terlik.</p><p id="guncel"></p></div>
+<div><h3>İletişim</h3><p>Telefon: <span id="tel"></span></p><p>E-posta: <span id="eposta"></span></p><p id="sehir"></p></div>
+<div><h3>Çalışma saatleri</h3><p>Siparişleri 7/24 alıyoruz. Sorularına genellikle aynı gün dönüş yapıyoruz.</p></div>
+</div></footer>
+
+<div class="ov" id="pov" role="dialog" aria-modal="true" aria-labelledby="pt"><div class="sheet wide" id="pbox"></div></div>
+
+<script>window.__VERI={"meta":{"magaza":"Adım Ayakkabı","tel":"0555 000 00 00","eposta":"destek@adimayakkabi.com","odeme":false,"sehir":"Çorum","guncel":"24.11.2026 05:49","ornek":true},"urunler":[{"id":"MN002F25490SH","kod":"MN002F25490SH","ad":"MN002 - CST Loafer Pelle Erkek Ayakkabı SIYAH","kat":"Spor Ayakkabı","marka":"MOOİEN","renk":"SIYAH","fiyat":1599,"psf":0,"resim":[],"beden":[{"b":"39","s":17},{"b":"40","s":11},{"b":"41","s":12},{"b":"42","s":2},{"b":"43","s":13},{"b":"44","s":4}],"stok":59,"acik":"MN002 - CST Loafer Pelle Erkek Ayakkabı SIYAH\nRahat iç taban, esnek kauçuk dış taban.\nRenk: SIYAH"},{"id":"MN002R15490SH","kod":"MN002R15490SH","ad":"MN002 - RBT Loafer Verniciata Erkek Ayakkabı SIYAH","kat":"Spor Ayakkabı","marka":"MOOİEN","renk":"SIYAH","fiyat":1599,"psf":0,"resim":[],"beden":[{"b":"39","s":2},{"b":"40","s":0},{"b":"41","s":27},{"b":"42","s":0},{"b":"43","s":15},{"b":"44","s":51}],"stok":95,"acik":"MN002 - RBT Loafer Verniciata Erkek Ayakkabı SIYAH\nRahat iç taban, esnek kauçuk dış taban.\nRenk: SIYAH"},{"id":"MN003D25490SH","kod":"MN003D25490SH","ad":"MN003 - DST Classica Pelle Di Cuoio Erkek Ayakkabı SIYAH","kat":"Deri Ayakkabı","marka":"MOOİEN","renk":"SIYAH","fiyat":1849,"psf":0,"resim":[],"beden":[{"b":"39","s":35},{"b":"40","s":109},{"b":"41","s":104},{"b":"42","s":111},{"b":"43","s":16},{"b":"44","s":8},{"b":"45","s":0}],"stok":383,"acik":"MN003 - DST Classica Pelle Di Cuoio Erkek Ayakkabı SIYAH\nRahat iç taban, esnek kauçuk dış taban.\nRenk: SIYAH"},{"id":"MN003F15490TB","kod":"MN003F15490TB","ad":"MN003 - CBT Pelle Classica Erkek Ayakkabı TABA","kat":"Spor Ayakkabı","marka":"MOOİEN","renk":"TABA","fiyat":1549,"psf":0,"resim":[],"beden":[{"b":"38","s":5},{"b":"39","s":16},{"b":"40","s":6},{"b":"41","s":6},{"b":"42","s":6},{"b":"43","s":1},{"b":"44","s":3}],"stok":43,"acik":"MN003 - CBT Pelle Classica Erkek Ayakkabı TABA\nRahat iç taban, esnek kauçuk dış taban.\nRenk: TABA"},{"id":"MN003S25490SH","kod":"MN003S25490SH","ad":"MN003 - SST Comoscio Classico Erkek Ayakkabı SIYAH","kat":"Spor Ayakkabı","marka":"MOOİEN","renk":"SIYAH","fiyat":1549,"psf":0,"resim":[],"beden":[{"b":"38","s":6},{"b":"39","s":40},{"b":"40","s":35},{"b":"41","s":29},{"b":"42","s":33},{"b":"43","s":17},{"b":"44","s":11},{"b":"45","s":3}],"stok":174,"acik":"MN003 - SST Comoscio Classico Erkek Ayakkabı SIYAH\nRahat iç taban, esnek kauçuk dış taban.\nRenk: SIYAH"},{"id":"MN009F15132SH","kod":"MN009F15132SH","ad":"MN009 - FST Military Erkek Bot SIYAH","kat":"Bot","marka":"MOOİEN","renk":"SIYAH","fiyat":1849,"psf":0,"resim":[],"beden":[{"b":"40","s":25},{"b":"41","s":11},{"b":"42","s":7},{"b":"43","s":0},{"b":"44","s":0}],"stok":43,"acik":"MN009 - FST Military Erkek Bot SIYAH\nRahat iç taban, esnek kauçuk dış taban.\nRenk: SIYAH"},{"id":"MN009I15132KE","kod":"MN009I15132KE","ad":"MN009 - CST Military Erkek Bot KAHVE","kat":"Bot","marka":"MOOİEN","renk":"KAHVE","fiyat":1849,"psf":0,"resim":[],"beden":[{"b":"40","s":9},{"b":"41","s":0},{"b":"42","s":0},{"b":"43","s":0},{"b":"44","s":0}],"stok":9,"acik":"MN009 - CST Military Erkek Bot KAHVE\nRahat iç taban, esnek kauçuk dış taban.\nRenk: KAHVE"},{"id":"CH257B15490SH","kod":"CH257B15490SH","ad":"CH257 - İpekyol Beyaz Taban Erkek Ayakkabı SIYAH","kat":"Spor Ayakkabı","marka":"CHEKICH","renk":"SIYAH","fiyat":1649,"psf":0,"resim":[],"beden":[{"b":"40","s":12},{"b":"41","s":20},{"b":"42","s":18},{"b":"43","s":9},{"b":"44","s":4}],"stok":63,"acik":"CH257 - İpekyol Beyaz Taban Erkek Ayakkabı SIYAH\nRahat iç taban, esnek kauçuk dış taban.\nRenk: SIYAH"},{"id":"CH075C15490BS","kod":"CH075C15490BS","ad":"CH075 - CBT Signature Erkek Ayakkabı BEYAZ/SIYAH","kat":"Spor Ayakkabı","marka":"CHEKICH","renk":"BEYAZ/SIYAH","fiyat":1599,"psf":0,"resim":[],"beden":[{"b":"39","s":3},{"b":"40","s":8},{"b":"41","s":14},{"b":"42","s":10},{"b":"43","s":6}],"stok":41,"acik":"CH075 - CBT Signature Erkek Ayakkabı BEYAZ/SIYAH\nRahat iç taban, esnek kauçuk dış taban.\nRenk: BEYAZ/SIYAH"},{"id":"CH2433S15132SH","kod":"CH2433S15132SH","ad":"CH2433 - SST Erkek Bot SIYAH","kat":"Bot","marka":"CHEKICH","renk":"SIYAH","fiyat":1749,"psf":0,"resim":[],"beden":[{"b":"40","s":6},{"b":"41","s":9},{"b":"42","s":12},{"b":"43","s":4},{"b":"44","s":2}],"stok":33,"acik":"CH2433 - SST Erkek Bot SIYAH\nRahat iç taban, esnek kauçuk dış taban.\nRenk: SIYAH"},{"id":"CH001F15490SH","kod":"CH001F15490SH","ad":"CH001 - FBT Classic Lace Erkek Ayakkabı SIYAH","kat":"Deri Ayakkabı","marka":"CHEKICH","renk":"SIYAH","fiyat":1549,"psf":0,"resim":[],"beden":[{"b":"39","s":4},{"b":"40","s":7},{"b":"41","s":0},{"b":"42","s":5},{"b":"43","s":3}],"stok":19,"acik":"CH001 - FBT Classic Lace Erkek Ayakkabı SIYAH\nRahat iç taban, esnek kauçuk dış taban.\nRenk: SIYAH"}]};</script>
+<script>
+{
+const $=id=>document.getElementById(id);
+const esc=t=>String(t??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const tl=n=>Number(n).toLocaleString('tr-TR')+' TL';
+const RENK={SIYAH:'#1c1c1c',BEYAZ:'#f4f4f2',BEJ:'#c9ab84',TABA:'#9a5a2c',KAHVE:'#5b3a24',KAHVERENGI:'#5b3a24',LACIVERT:'#1d2a4a',GRI:'#8a8a8a',ANTRASIT:'#3b3d40',HAKI:'#5d6236',BORDO:'#6b1f2a',SARI:'#e8b81e',KIRMIZI:'#b3242a',MAVI:'#2d5fa8',YESIL:'#2f6b3a',VIZON:'#a08c78'};
+const norm=s=>String(s||'').toLocaleUpperCase('tr-TR').replace(/İ/g,'I').replace(/Ş/g,'S').replace(/Ğ/g,'G').replace(/Ü/g,'U').replace(/Ö/g,'O').replace(/Ç/g,'C');
+const sekil=u=>{const k=norm(u.kat+' '+u.ad);return /BOT|CIZME/.test(k)?'boot':/TERLIK|SANDALET/.test(k)?'slipper':/KLASIK|LOAFER|KUNDURA|OXFORD|DERI AYAKKABI/.test(k)?'loafer':'sneaker'};
+const cizim=u=>{const r=norm(u.renk).split(/[\/\s,-]+/).filter(Boolean);const up=RENK[r[0]]||'#3a3a3a';const so=/BEYAZ TABAN/.test(norm(u.ad))||r[1]==='BEYAZ'?'#f6f6f4':(up==='#f4f4f2'?'#1d1d1d':'#2b2b2b');const l=RENK[r[2]]||RENK[r[1]]||(up==='#1c1c1c'?'#777':'#ddd');return `<svg viewBox="0 0 220 120" role="img" aria-label="${esc(u.ad)}" style="--u:${up};--s:${so};--l:${l}"><use href="#${sekil(u)}"/></svg>`};
+const gorsel=(u,i=0)=>u.resim&&u.resim[i]?`<img src="${esc(u.resim[i])}" alt="${esc(u.ad)}" loading="lazy" data-u="${esc(u.id)}">`:cizim(u);
+const ind=u=>u.psf>u.fiyat?Math.round((1-u.fiyat/u.psf)*100):0;
+const baslik=u=>String(u.ad).replace(/^\S+\s+-\s+/,'');
+
+let U=[],M={},cat='Tümü',q='',sort='on',limit=24,cur=null;
+
+document.addEventListener('error',e=>{const t=e.target;if(t.tagName==='IMG'&&t.dataset.u){const u=U.find(x=>x.id===t.dataset.u);if(u){const d=document.createElement('div');d.style.cssText='display:grid;place-items:center;width:100%;height:100%';d.innerHTML=cizim(u);t.replaceWith(d)}}},true);
+
+const liste=()=>{
+  let l=U.filter(u=>(cat==='Tümü'||u.kat===cat)&&(!q||norm(u.kod+' '+u.ad+' '+u.renk+' '+u.marka).includes(q)));
+  if(sort==='ucuz')l=[...l].sort((a,b)=>a.fiyat-b.fiyat);
+  if(sort==='pahali')l=[...l].sort((a,b)=>b.fiyat-a.fiyat);
+  if(sort==='stok')l=[...l].sort((a,b)=>b.stok-a.stok);
+  return l;
+};
+const drawCats=()=>{
+  const say={};U.forEach(u=>say[u.kat]=(say[u.kat]||0)+1);
+  const ks=['Tümü',...Object.keys(say).sort((a,b)=>say[b]-say[a])];
+  $('cats').innerHTML=ks.map(k=>`<button class="chip" type="button" data-cat="${esc(k)}" aria-pressed="${k===cat}">${esc(k)}<small>${k==='Tümü'?U.length:say[k]}</small></button>`).join('');
+};
+const drawGrid=()=>{
+  const l=liste();
+  $('count').textContent=l.length+' model listeleniyor';
+  $('grid').innerHTML=l.length?l.slice(0,limit).map(u=>{const st=u.beden.filter(b=>b.s>0).map(b=>b.b);return `<button class="card" type="button" data-u="${esc(u.id)}">
+<div class="shelf">${gorsel(u)}<span class="tag">${esc(u.kat)}</span>${ind(u)?`<span class="off">%${ind(u)}</span>`:''}</div>
+<div class="body"><span class="code">${esc(u.marka?u.marka+' · ':'')}${esc(u.kod.split(/[^A-Z0-9]/i)[0]||u.kod)}</span><h3>${esc(baslik(u))}</h3>
+${st.length?`<span class="sz-mini">Numara: ${esc(st.join(', '))}</span>`:''}
+<div class="pr"><span class="price">${tl(u.fiyat)}</span>${u.psf?`<span class="old">${tl(u.psf)}</span>`:''}</div></div></button>`}).join(''):'<div class="empty">Bu aramayla eşleşen model yok.</div>';
+  $('more').hidden=l.length<=limit;
+};
+
+const payBtn=(b)=>{
+  const a=$('pay');if(!a)return;
+  if(!M.odeme){a.textContent='Kartla ödeme yakında açılıyor';a.setAttribute('aria-disabled','true');a.removeAttribute('href');return}
+  if(!b){a.textContent='Önce numaranı seç';a.setAttribute('aria-disabled','true');a.removeAttribute('href');return}
+  if(!b.l){a.textContent='Bu numaranın ödemesi hazırlanıyor';a.setAttribute('aria-disabled','true');a.removeAttribute('href');$('hint').textContent='Bu numara birkaç saat içinde satışa açılacak.';return}
+  a.textContent=`${b.b} numara · Kartla öde ${tl(cur.fiyat)}`;a.href=b.l;a.setAttribute('aria-disabled','false');
+};
+const openU=id=>{
+  const u=U.find(x=>x.id===id);if(!u)return;cur=u;
+  const imgs=u.resim&&u.resim.length?u.resim.map((_,i)=>`<div>${gorsel(u,i)}</div>`).join(''):`<div>${cizim(u)}</div>`;
+  const n=Math.max(1,(u.resim||[]).length);
+  $('pbox').innerHTML=`<div class="sh-h"><span class="code">${esc(u.marka||'')} · ${esc(u.kod)}</span><button class="x" data-close="1" type="button" aria-label="Kapat">×</button></div>
+<div class="det"><div><div class="gal" id="gal">${imgs}</div>${n>1?`<div class="gnav"><button type="button" data-g="-1" aria-label="Önceki fotoğraf">‹</button><span>${n} fotoğraf</span><button type="button" data-g="1" aria-label="Sonraki fotoğraf">›</button></div>`:''}</div>
+<div><h2 id="pt" style="font-size:clamp(24px,3vw,32px);margin-bottom:8px">${esc(baslik(u))}</h2>
+${u.renk?`<div class="code">Renk: ${esc(u.renk)}</div>`:''}
+<div class="pr" style="margin:10px 0 14px"><span class="price" style="font-size:28px">${tl(u.fiyat)}</span>${u.psf?`<span class="old">${tl(u.psf)}</span>`:''}<span class="sz-mini">Kargo ücretsiz</span></div>
+<strong>Numara seç</strong>
+<div class="sizes" role="group" aria-label="Numara">${u.beden.map(b=>`<button class="sz" type="button" data-sz="${esc(b.b)}" ${b.s>0?'':'disabled'} aria-pressed="false" aria-label="${esc(b.b)} numara${b.s>0?'':' tükendi'}">${esc(b.b)}</button>`).join('')}</div>
+<p class="hint" id="hint"></p>
+<a class="big" id="pay" target="_blank" rel="noopener" aria-disabled="true">Önce numaranı seç</a>
+<p class="secure">Güvenli ödeme sayfası iyzico'da açılır. Teslimat adresini orada gireceksin.</p>
+<div class="desc">${esc(u.acik||'Ücretsiz kargo ve kolay değişim ile.')}</div></div></div>`;
+  payBtn(null);
+  $('pov').classList.add('on');
+  if(location.hash!=='#u-'+u.id)location.hash='u-'+u.id;
+};
+const closeAll=()=>{$('pov').classList.remove('on');if(location.hash.startsWith('#u-'))location.hash='urunler'};
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.cat!==undefined){cat=t.dataset.cat;limit=24;drawCats();drawGrid();}
+  else if(t.classList.contains('card')){openU(t.dataset.u);}
+  else if(t.dataset.sz!==undefined){document.querySelectorAll('.sz').forEach(b=>b.setAttribute('aria-pressed',b===t));$('hint').textContent='';const b=cur.beden.find(x=>x.b===t.dataset.sz);if(b&&b.s<=2)$('hint').textContent='Bu numaradan son '+b.s+' çift kaldı.';payBtn(b);}
+  else if(t.dataset.g){const g=$('gal');g.scrollBy({left:g.clientWidth*(+t.dataset.g),behavior:'smooth'});}
+  else if(t.id==='more'){limit+=24;drawGrid();}
+  else if(t.dataset.close){closeAll();}
+});
+$('pov').addEventListener('click',e=>{if(e.target.id==='pov')closeAll()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeAll();
+  const g=$('gal');if(g&&$('pov').classList.contains('on')&&(e.key==='ArrowRight'||e.key==='ArrowLeft'))g.scrollBy({left:g.clientWidth*(e.key==='ArrowRight'?1:-1),behavior:'smooth'});
+});
+$('q').addEventListener('input',e=>{q=norm(e.target.value.trim());limit=24;drawGrid()});
+$('sort').addEventListener('change',e=>{sort=e.target.value;drawGrid()});
+const fromHash=()=>{const h=location.hash;if(h.startsWith('#u-'))openU(h.slice(3));else $('pov').classList.remove('on')};
+window.addEventListener('hashchange',fromHash);
+
+const basla=d=>{
+  U=d.urunler||[];M=d.meta||{};
+  if(M.magaza){document.title=M.magaza;$('fname').textContent=M.magaza;const p=M.magaza.split(' ');$('logo').innerHTML=esc(p[0])+(p[1]?'<span>'+esc(p.slice(1).join(' '))+'</span>':'');}
+  $('tel').textContent=M.tel||'';$('eposta').textContent=M.eposta||'';$('sehir').textContent=M.sehir?M.sehir+', Türkiye geneline gönderim':'';
+  $('guncel').textContent=M.guncel?'Katalog güncelleme: '+M.guncel:'';
+  $('demo').hidden=!M.ornek;
+  drawCats();drawGrid();fromHash();
+};
+(window.__VERI?Promise.resolve(window.__VERI):fetch('urunler.json',{cache:'no-store'}).then(r=>r.json()))
+  .then(basla).catch(()=>{$('count').textContent='Ürünler yüklenemedi. Lütfen sayfayı yenile.'});
+}
+</script>
+</body>
+</html>

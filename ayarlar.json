@@ -1,0 +1,42 @@
+{
+  "magaza_adi": "Adım Ayakkabı",
+  "telefon_yazisi": "0555 000 00 00",
+  "eposta": "destek@adimayakkabi.com",
+  "sehir": "Çorum",
+
+  "net_kar_tl": 500,
+  "kargo_payi_tl": 0,
+  "odeme_komisyon_yuzde": 4,
+  "alis_kdv_dahil": false,
+  "kdv_orani": 10,
+  "yuvarla": 50,
+  "en_az_stok": 1,
+  "psf_goster": false,
+
+  "sadece_markalar": [],
+  "gizlenecek_kategoriler": [],
+  "gizlenecek_kodlar": [],
+  "ozel_fiyatlar": { "ORNEKKOD123": 1999 },
+
+  "satis_acik": false,
+  "arama_motorundan_gizle": true,
+  "taksit": false,
+  "iyzico_tur_basina_en_fazla_yeni": 300,
+
+  "etiketler": {
+    "urun":     ["Product", "Urun", "Item"],
+    "kod":      ["Product_code", "UrunKodu", "StokKodu", "ModelKodu", "Kod", "ProductCode", "Sku"],
+    "ad":       ["Name", "UrunAdi", "Adi", "ProductName", "Title"],
+    "alis":     ["buying_price", "BayiFiyati", "AlisFiyati", "DealerPrice"],
+    "psf":      ["Price", "PiyasaFiyati", "ListeFiyati", "Psf", "ListPrice"],
+    "stok":     ["Stock", "Stok", "StokAdedi", "Miktar", "Adet", "Quantity"],
+    "kategori": ["category", "Kategori", "KategoriAdi", "Category"],
+    "marka":    ["Brand", "Marka"],
+    "renk":     ["Renk", "Color", "Colour"],
+    "aciklama": ["Description", "Aciklama", "UrunAciklama"],
+    "varyant":  ["variant", "Varyant", "Secenek"],
+    "beden":    ["Beden", "Numara", "Size"],
+    "bedenler_tek_alan": ["Bedenler", "Numaralar", "Sizes"],
+    "resim_baslar": ["image", "resim", "picture", "foto"]
+  }
+}
