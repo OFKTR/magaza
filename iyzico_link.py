@@ -148,7 +148,7 @@ def mevcut_linkler():
 
 def link_adi(urun, beden):
     """iyzico link adı en fazla 50 karakter olabilir: 'CST Loafer Pelle Erkek Ayakkabı - 42 No'."""
-    ek = f" - {beden} No"
+    ek = "" if beden == "Standart" else f" - {beden} No"
     kisa = re.sub(r"^\S+\s+-\s+", "", urun["ad"]).strip()
     return kisa[: 50 - len(ek)].rstrip(" -") + ek
 

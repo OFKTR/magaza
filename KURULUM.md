@@ -113,3 +113,21 @@ Gelir vergisi ve aylık sabit giderler (muhasebeci gibi) bu hesaba dahil değild
 ## Not: GitHub Pages ve ticari kullanım
 
 GitHub Pages kuralları sitenin esas olarak bir e-ticaret işi için kullanılmasına izin vermiyor. Kurmak ve denemek için uygundur. Satışlar başlayınca aynı `site` klasörünü ücretsiz ve ticari kullanıma izin veren **Cloudflare Pages**'e taşımak gerekir.
+
+
+## Yeni tedarikçi eklemek (saat, kemer vb.)
+
+Site aynı anda 3 tedarikçiye kadar XML okur (`ayarlar.json` > `kaynaklar`).
+
+1. Tedarikçiden XML linkini al.
+2. GitHub > **Settings > Secrets and variables > Actions > New repository secret**
+   - Name: `XML_URL_2` (üçüncü tedarikçi için `XML_URL_3`)
+   - Secret: tedarikçinin XML linki
+3. `ayarlar.json` içinde `"Tedarikçi 2"` adını tedarikçinin adıyla değiştirebilirsin.
+4. **Actions > Run workflow**. Kayıtta "Tedarikçi 2: ... ürün eklendi" satırını görmelisin. "0 ürün" yazıyorsa XML'in formatı farklıdır, linkin ilk birkaç ürününü Claude'a gönder, etiket ayarını yapsın.
+
+Notlar:
+- KDV oranı ürünün XML'inde yazıyorsa (Tax, KDV) her ürün kendi oranıyla hesaplanır. Saat ve kemerde KDV genellikle %20, ayakkabıda %10.
+- Numarası olmayan ürünlerde (saat, kemer) sitede numara seçimi çıkmaz, ödeme butonu doğrudan açılır.
+- Kâr kuralları: kemer 150 TL, saat 250 TL, tişört 100 TL, diğer her şey 500 TL (`kar_kurallari`).
+- Yeni tedarikçinin alış fiyatı KDV dahilse, `kaynaklar` içinde o tedarikçiye `"alis_kdv_dahil": true` ekle.

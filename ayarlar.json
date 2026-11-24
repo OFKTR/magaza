@@ -6,7 +6,15 @@
 
   "net_kar_tl": 500,
   "kar_kurallari": [
-    { "icerir": ["TİŞÖRT", "TISORT", "T-SHIRT", "TSHIRT"], "net_kar_tl": 100 }
+    { "icerir": ["TİŞÖRT", "TISORT", "T-SHIRT", "TSHIRT"], "net_kar_tl": 100 },
+    { "icerir": ["KEMER"], "net_kar_tl": 150 },
+    { "icerir": ["KOL SAATİ", "KOLSAATI", "SAAT"], "net_kar_tl": 250 }
+  ],
+
+  "kaynaklar": [
+    { "ad": "Chekich", "xml_env": "XML_URL" },
+    { "ad": "Tedarikçi 2", "xml_env": "XML_URL_2" },
+    { "ad": "Tedarikçi 3", "xml_env": "XML_URL_3" }
   ],
   "kargo_payi_tl": 0,
   "odeme_komisyon_yuzde": 4,
@@ -36,6 +44,7 @@
     "kategori": ["category", "Kategori", "KategoriAdi", "Category"],
     "marka":    ["Brand", "Marka"],
     "renk":     ["Renk", "Color", "Colour"],
+    "kdv":      ["Tax", "KDV", "KdvOrani", "Kdv", "VatRate", "Vat"],
     "aciklama": ["Description", "Aciklama", "UrunAciklama"],
     "varyant":  ["variant", "Varyant", "Secenek"],
     "beden":    ["Beden", "Numara", "Size"],

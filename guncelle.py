@@ -80,16 +80,23 @@ def _sade(s):
     return re.sub(r"[^A-Z0-9]", "", s)
 
 
+KAYNAK = {}  # o an okunan tedarikçinin ayarları
+
+
 def net_kar(ad="", kat=""):
-    """Ürün adı/kategorisi bir kâr kuralına uyuyorsa o kuralın kârını, yoksa genel kârı döndürür."""
+    """Önce ürün adına göre kâr kuralı, sonra tedarikçinin kârı, en son genel kâr."""
     metin = _sade(f"{ad} {kat}")
     for kural in AYAR.get("kar_kurallari", []):
         if any(_sade(k) in metin for k in kural.get("icerir", [])):
             return kural["net_kar_tl"]
-    return AYAR.get("net_kar_tl", AYAR.get("kar_tl", 500))
+    return KAYNAK.get("net_kar_tl", AYAR.get("net_kar_tl", AYAR.get("kar_tl", 500)))
 
 
-def satis_fiyati(alis, kod, ad="", kat=""):
+def _kdv(kdv):
+    return (kdv if kdv is not None else KAYNAK.get("kdv_orani", AYAR.get("kdv_orani", 10))) / 100
+
+
+def satis_fiyati(alis, kod, ad="", kat="", kdv=None):
     """
     Satış fiyatını, her şey ödendikten sonra cebine net_kar_tl kalacak şekilde hesaplar.
 
@@ -101,8 +108,8 @@ def satis_fiyati(alis, kod, ad="", kat=""):
     """
     if kod in AYAR.get("ozel_fiyatlar", {}):
         return int(AYAR["ozel_fiyatlar"][kod])
-    k = AYAR.get("kdv_orani", 10) / 100
-    alis_haric = alis / (1 + k) if AYAR.get("alis_kdv_dahil", False) else alis
+    k = _kdv(kdv)
+    alis_haric = alis / (1 + k) if KAYNAK.get("alis_kdv_dahil", AYAR.get("alis_kdv_dahil", False)) else alis
     kom = AYAR.get("odeme_komisyon_yuzde", 4) / 100
     net = net_kar(ad, kat)
     f = (alis_haric + net + AYAR.get("kargo_payi_tl", 0)) / (1 - kom - k / (1 + k))
@@ -110,9 +117,9 @@ def satis_fiyati(alis, kod, ad="", kat=""):
     return int(math.ceil(f / y) * y - (1 if y >= 10 else 0))  # ör. 1549, 1599
 
 
-def cebe_kalan(fiyat, alis):
-    k = AYAR.get("kdv_orani", 10) / 100
-    alis_haric = alis / (1 + k) if AYAR.get("alis_kdv_dahil", False) else alis
+def cebe_kalan(fiyat, alis, kdv=None):
+    k = _kdv(kdv)
+    alis_haric = alis / (1 + k) if KAYNAK.get("alis_kdv_dahil", AYAR.get("alis_kdv_dahil", False)) else alis
     kom = AYAR.get("odeme_komisyon_yuzde", 4) / 100
     return fiyat * (1 - kom) - alis_haric * (1 + k) - (fiyat * k / (1 + k) - alis_haric * k) - AYAR.get("kargo_payi_tl", 0)
 
@@ -172,30 +179,34 @@ def kategori_duzelt(k):
     return tr_baslik(k.strip()) if k.strip() else "Diğer"
 
 
-def xml_oku():
-    url = os.environ.get("XML_URL", "").strip()
-    if url:
-        print("XML indiriliyor...")
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 AdimMagaza"})
-        with urllib.request.urlopen(req, timeout=90) as r:
-            veri = r.read()
-        print(f"İndirildi: {len(veri)//1024} KB")
-        return veri, False
-    print("XML_URL tanımlı değil, ornek.xml kullanılıyor.")
-    return open(os.path.join(KOK, "ornek.xml"), "rb").read(), True
+def xml_oku(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 NoverMagaza"})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        return r.read()
 
 
-def main():
-    veri, ornek = xml_oku()
-    kok = ET.fromstring(veri)
+def kaynaklari_al():
+    """ayarlar.json'daki tedarikçi listesini, linki tanımlı olanlarla döndürür."""
+    liste = AYAR.get("kaynaklar") or [{"ad": "Ana tedarikçi", "xml_env": "XML_URL"}]
+    hazir = []
+    for k in liste:
+        url = os.environ.get(k.get("xml_env", ""), "").strip()
+        if url:
+            hazir.append((k, url))
+        else:
+            print(f"{k.get('ad')}: {k.get('xml_env')} tanımlı değil, atlanıyor.")
+    return hazir
+
+
+def kaynak_oku(kok, urunler, atlanan, ornek_kar, tum_kodlar, kural_ref, gorulen_id):
+    global ET_
+    ET_ = {**AYAR["etiketler"], **KAYNAK.get("etiketler", {})}
     urun_adlari = [a.lower() for a in ET_["urun"]]
     gizli_kat = {k.lower() for k in AYAR.get("gizlenecek_kategoriler", [])}
     gizli_kod = set(AYAR.get("gizlenecek_kodlar", []))
     mnorm = lambda m: m.upper().replace("İ", "I").replace("ı", "I").strip()
     markalar = {mnorm(m) for m in AYAR.get("sadece_markalar", [])}
-    tum_kodlar = set()
-
-    urunler, atlanan, ornek_kar, kural_say = [], {"stoksuz": 0, "fiyatsiz": 0, "gizli": 0}, [], 0
+    once = len(urunler)
     for el in kok.iter():
         if ad(el) not in urun_adlari:
             continue
@@ -204,31 +215,39 @@ def main():
         if not kod or not isim:
             continue
         tum_kodlar.add(kod)
-        kat = kategori_duzelt(bul(el, ET_["kategori"], derin=True))
-        marka = bul(el, ET_["marka"], derin=True)
+        kat = KAYNAK.get("kategori") or kategori_duzelt(bul(el, ET_["kategori"], derin=True))
+        marka = bul(el, ET_["marka"], derin=True) or KAYNAK.get("marka", "")
         if (kod in gizli_kod or kat.lower() in gizli_kat
-                or (markalar and mnorm(marka) not in markalar)):
+                or (markalar and KAYNAK.get("marka_filtresi", True) and mnorm(marka) not in markalar)):
             atlanan["gizli"] += 1
             continue
         alis = sayi(bul(el, ET_["alis"]))
         if alis <= 0:
             atlanan["fiyatsiz"] += 1
             continue
+        kdv_txt = bul(el, ET_.get("kdv", []))
+        kdv = sayi(kdv_txt) if kdv_txt else None
         st_txt = bul(el, ET_["stok"])
         toplam = int(sayi(st_txt)) if st_txt else 0
         bd = bedenler(el, toplam)
         if bd:
             toplam = sum(x["s"] for x in bd)
+        elif toplam > 0:
+            bd = [{"b": "Standart", "s": toplam}]  # saat, kemer gibi numarasız ürünler
         if toplam < AYAR.get("en_az_stok", 1):
             atlanan["stoksuz"] += 1
             continue
-        fiyat = satis_fiyati(alis, kod, isim, kat)
-        ornek_kar.append(cebe_kalan(fiyat, alis))
+        fiyat = satis_fiyati(alis, kod, isim, kat, kdv)
+        ornek_kar.append(cebe_kalan(fiyat, alis, kdv))
         if net_kar(isim, kat) != AYAR.get("net_kar_tl", 500):
-            kural_say += 1
+            kural_ref[0] += 1
         psf = sayi(bul(el, ET_["psf"]))
+        uid = re.sub(r"[^A-Za-z0-9-]", "", kod) or str(len(urunler))
+        if uid in gorulen_id:
+            uid = f"{uid}-{len(urunler)}"
+        gorulen_id.add(uid)
         urunler.append({
-            "id": re.sub(r"[^A-Za-z0-9-]", "", kod) or str(len(urunler)),
+            "id": uid,
             "kod": kod,
             "ad": isim,
             "kat": kat,
@@ -241,6 +260,33 @@ def main():
             "stok": toplam,
             "acik": temiz_aciklama(bul(el, ET_["aciklama"], derin=True)),
         })
+    print(f"{KAYNAK.get('ad', 'Tedarikçi')}: {len(urunler) - once} ürün eklendi")
+
+
+def main():
+    global KAYNAK
+    urunler, atlanan, ornek_kar = [], {"stoksuz": 0, "fiyatsiz": 0, "gizli": 0}, []
+    tum_kodlar, kural_ref, gorulen_id = set(), [0], set()
+    kaynaklar = kaynaklari_al()
+    ornek = not kaynaklar
+    if ornek:
+        print("Hiç XML linki tanımlı değil, ornek.xml kullanılıyor.")
+        KAYNAK = {"ad": "Örnek"}
+        kaynak_oku(ET.fromstring(open(os.path.join(KOK, "ornek.xml"), "rb").read()),
+                   urunler, atlanan, ornek_kar, tum_kodlar, kural_ref, gorulen_id)
+    for k, url in kaynaklar:
+        KAYNAK = k
+        print(f"{k.get('ad')}: XML indiriliyor...")
+        try:
+            veri = xml_oku(url)
+            print(f"{k.get('ad')}: indirildi, {len(veri)//1024} KB")
+            kaynak_oku(ET.fromstring(veri), urunler, atlanan, ornek_kar, tum_kodlar, kural_ref, gorulen_id)
+        except Exception as e:
+            if k is (AYAR.get("kaynaklar") or [k])[0]:
+                raise  # ana tedarikçi okunamazsa site eski haliyle kalsın
+            print(f"UYARI: {k.get('ad')} okunamadı, bu turda atlandı: {e}")
+    KAYNAK = {}
+    kural_say = kural_ref[0]
 
     if not urunler:
         print("HATA: Hiç ürün okunamadı. ayarlar.json içindeki 'etiketler' kısmını XML'e göre düzenleyin.")

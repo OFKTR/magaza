@@ -18,6 +18,7 @@
 :root{color-scheme:light dark;--bg:light-dark(#ffffff,#141210);--ink:light-dark(#141210,#f3ede5);--soft:light-dark(#5d544b,#bdb2a5);--kraft:light-dark(#d6b48a,#6b5338);--kraft2:light-dark(#efe0cb,#2a221a);--card:light-dark(#ffffff,#1d1915);--line:light-dark(#e6dccd,#3a3027);--wa:#1a9e4b;--warn:light-dark(#c2410c,#fb923c)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
 html{scroll-padding-top:72px;scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Archivo,system-ui,sans-serif;overflow-x:clip}
 img{max-width:100%}
@@ -114,6 +115,8 @@ footer p{margin:6px 0 0;opacity:.8}
 <symbol id="boot" viewBox="0 0 220 120"><ellipse cx="112" cy="106" rx="98" ry="7" fill="#000" opacity=".18"/><path d="M20 82L20 102L206 102Q210 92 206 82Z" fill="var(--s)"/><path d="M24 84L26 26Q28 8 46 8L92 8Q102 8 102 20L106 48Q122 55 152 59L186 65Q207 71 206 84Z" fill="var(--u)"/><path d="M46 8L92 8Q102 8 102 20" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="3"/><path d="M152 59L186 65Q207 71 206 84L168 84Q166 68 148 63Z" fill="#000" opacity=".12"/><g stroke="var(--l)" stroke-width="4" stroke-linecap="round"><line x1="90" y1="22" x2="104" y2="20"/><line x1="92" y1="33" x2="106" y2="31"/><line x1="94" y1="44" x2="108" y2="42"/></g></symbol>
 <symbol id="loafer" viewBox="0 0 220 120"><ellipse cx="112" cy="104" rx="98" ry="7" fill="#000" opacity=".18"/><path d="M16 86L16 98L206 98Q210 92 206 86Z" fill="var(--s)"/><path d="M18 88Q14 62 40 58L96 54Q130 50 160 59L190 70Q208 77 206 88Z" fill="var(--u)"/><path d="M96 54Q130 50 160 59" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/><path d="M118 60Q150 56 176 70Q160 76 130 74Z" fill="none" stroke="var(--l)" stroke-width="2.5" stroke-dasharray="4 4"/><rect x="120" y="62" width="26" height="6" rx="3" fill="var(--l)"/></symbol>
 <symbol id="slipper" viewBox="0 0 220 120"><ellipse cx="112" cy="104" rx="98" ry="7" fill="#000" opacity=".18"/><path d="M12 86Q12 98 26 98L196 98Q210 98 210 86Z" fill="var(--s)"/><path d="M12 86L210 86L210 80L12 80Z" fill="var(--s)" opacity=".7"/><path d="M66 84Q74 44 118 42Q160 44 168 84Z" fill="var(--u)"/><path d="M78 62Q92 48 118 47Q146 48 158 62" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/><path d="M84 72L152 72" stroke="var(--l)" stroke-width="2.5" stroke-dasharray="4 4"/></symbol>
+<symbol id="belt" viewBox="0 0 220 120"><ellipse cx="110" cy="104" rx="92" ry="7" fill="#000" opacity=".18"/><path d="M20 70Q20 40 60 40L170 40Q200 40 200 60Q200 80 170 80L60 80Q40 80 40 62" fill="none" stroke="var(--u)" stroke-width="18" stroke-linecap="round"/><path d="M60 40L170 40" stroke="#fff" stroke-opacity=".3" stroke-width="2"/><rect x="128" y="27" width="30" height="40" rx="5" fill="none" stroke="var(--l)" stroke-width="6"/><line x1="143" y1="31" x2="143" y2="63" stroke="var(--l)" stroke-width="4"/><g fill="#000" opacity=".25"><circle cx="90" cy="40" r="2.5"/><circle cx="104" cy="40" r="2.5"/><circle cx="118" cy="40" r="2.5"/></g></symbol>
+<symbol id="watch" viewBox="0 0 220 120"><ellipse cx="110" cy="108" rx="60" ry="6" fill="#000" opacity=".18"/><rect x="92" y="2" width="36" height="30" rx="6" fill="var(--u)"/><rect x="92" y="78" width="36" height="28" rx="6" fill="var(--u)"/><circle cx="110" cy="55" r="34" fill="var(--l)"/><circle cx="110" cy="55" r="28" fill="var(--s)"/><path d="M110 55L110 36M110 55L124 62" stroke="var(--l)" stroke-width="3.5" stroke-linecap="round"/><circle cx="110" cy="55" r="3" fill="var(--l)"/><path d="M88 40Q96 30 110 28" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/></symbol>
 </defs></svg>
 
 <div class="demo" id="demo" hidden>Bu örnek katalogdur. Gerçek XML bağlanınca tüm ürünler, fotoğraflar ve stoklar otomatik gelir.</div>
@@ -186,11 +189,12 @@ const esc=t=>String(t??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&
 const tl=n=>Number(n).toLocaleString('tr-TR')+' TL';
 const RENK={SIYAH:'#1c1c1c',BEYAZ:'#f4f4f2',BEJ:'#c9ab84',TABA:'#9a5a2c',KAHVE:'#5b3a24',KAHVERENGI:'#5b3a24',LACIVERT:'#1d2a4a',GRI:'#8a8a8a',ANTRASIT:'#3b3d40',HAKI:'#5d6236',BORDO:'#6b1f2a',SARI:'#e8b81e',KIRMIZI:'#b3242a',MAVI:'#2d5fa8',YESIL:'#2f6b3a',VIZON:'#a08c78'};
 const norm=s=>String(s||'').toLocaleUpperCase('tr-TR').replace(/İ/g,'I').replace(/Ş/g,'S').replace(/Ğ/g,'G').replace(/Ü/g,'U').replace(/Ö/g,'O').replace(/Ç/g,'C');
-const sekil=u=>{const k=norm(u.kat+' '+u.ad);return /BOT|CIZME/.test(k)?'boot':/TERLIK|SANDALET/.test(k)?'slipper':/KLASIK|LOAFER|KUNDURA|OXFORD|DERI AYAKKABI/.test(k)?'loafer':'sneaker'};
-const cizim=u=>{const r=norm(u.renk).split(/[\/\s,-]+/).filter(Boolean);const up=RENK[r[0]]||'#3a3a3a';const so=/BEYAZ TABAN/.test(norm(u.ad))||r[1]==='BEYAZ'?'#f6f6f4':(up==='#f4f4f2'?'#1d1d1d':'#2b2b2b');const l=RENK[r[2]]||RENK[r[1]]||(up==='#1c1c1c'?'#777':'#ddd');return `<svg viewBox="0 0 220 120" role="img" aria-label="${esc(u.ad)}" style="--u:${up};--s:${so};--l:${l}"><use href="#${sekil(u)}"/></svg>`};
+const sekil=u=>{const k=norm(u.kat+' '+u.ad);return /KEMER/.test(k)?'belt':/SAAT/.test(k)?'watch':/BOT|CIZME/.test(k)?'boot':/TERLIK|SANDALET/.test(k)?'slipper':/KLASIK|LOAFER|KUNDURA|OXFORD|DERI AYAKKABI/.test(k)?'loafer':'sneaker'};
+const cizim=u=>{const r=norm(u.renk).split(/[\/\s,-]+/).filter(Boolean);const up=RENK[r[0]]||'#3a3a3a';const so=/BEYAZ TABAN/.test(norm(u.ad))||r[1]==='BEYAZ'?'#f6f6f4':(up==='#f4f4f2'?'#1d1d1d':'#2b2b2b');const l=/KEMER|SAAT/.test(norm(u.kat+' '+u.ad))?'#c9c2b6':(RENK[r[2]]||RENK[r[1]]||(up==='#1c1c1c'?'#777':'#ddd'));return `<svg viewBox="0 0 220 120" role="img" aria-label="${esc(u.ad)}" style="--u:${up};--s:${so};--l:${l}"><use href="#${sekil(u)}"/></svg>`};
 const gorsel=(u,i=0)=>u.resim&&u.resim[i]?`<img src="${esc(u.resim[i])}" alt="${esc(u.ad)}" loading="lazy" data-u="${esc(u.id)}">`:cizim(u);
 const ind=u=>u.psf>u.fiyat?Math.round((1-u.fiyat/u.psf)*100):0;
 const baslik=u=>String(u.ad).replace(/^\S+\s+-\s+/,'');
+const tekBeden=u=>u.beden.length===1&&u.beden[0].b==='Standart';
 
 let U=[],M={},cat='Tümü',q='',sort='on',limit=24,cur=null;
 
@@ -214,7 +218,7 @@ const drawGrid=()=>{
   $('grid').innerHTML=l.length?l.slice(0,limit).map(u=>{const st=u.beden.filter(b=>b.s>0).map(b=>b.b);return `<button class="card" type="button" data-u="${esc(u.id)}">
 <div class="shelf">${gorsel(u)}<span class="tag">${esc(u.kat)}</span>${ind(u)?`<span class="off">%${ind(u)}</span>`:''}</div>
 <div class="body"><span class="code">${esc(u.marka?u.marka+' · ':'')}${esc(u.kod.split(/[^A-Z0-9]/i)[0]||u.kod)}</span><h3>${esc(baslik(u))}</h3>
-${st.length?`<span class="sz-mini">Numara: ${esc(st.join(', '))}</span>`:''}
+${st.length&&!tekBeden(u)?`<span class="sz-mini">Numara: ${esc(st.join(', '))}</span>`:''}
 <div class="pr"><span class="price">${tl(u.fiyat)}</span>${u.psf?`<span class="old">${tl(u.psf)}</span>`:''}</div></div></button>`}).join(''):'<div class="empty">Bu aramayla eşleşen model yok.</div>';
   $('more').hidden=l.length<=limit;
 };
@@ -224,7 +228,7 @@ const payBtn=(b)=>{
   if(!M.odeme){a.textContent='Kartla ödeme yakında açılıyor';a.setAttribute('aria-disabled','true');a.removeAttribute('href');return}
   if(!b){a.textContent='Önce numaranı seç';a.setAttribute('aria-disabled','true');a.removeAttribute('href');return}
   if(!b.l){a.textContent='Bu numaranın ödemesi hazırlanıyor';a.setAttribute('aria-disabled','true');a.removeAttribute('href');$('hint').textContent='Bu numara birkaç saat içinde satışa açılacak.';return}
-  a.textContent=`${b.b} numara · Kartla öde ${tl(cur.fiyat)}`;a.href=b.l;a.setAttribute('aria-disabled','false');
+  a.textContent=b.b==='Standart'?`Kartla öde ${tl(cur.fiyat)}`:`${b.b} numara · Kartla öde ${tl(cur.fiyat)}`;a.href=b.l;a.setAttribute('aria-disabled','false');
 };
 const openU=id=>{
   const u=U.find(x=>x.id===id);if(!u)return;cur=u;
@@ -235,13 +239,13 @@ const openU=id=>{
 <div><h2 id="pt" style="font-size:clamp(24px,3vw,32px);margin-bottom:8px">${esc(baslik(u))}</h2>
 ${u.renk?`<div class="code">Renk: ${esc(u.renk)}</div>`:''}
 <div class="pr" style="margin:10px 0 14px"><span class="price" style="font-size:28px">${tl(u.fiyat)}</span>${u.psf?`<span class="old">${tl(u.psf)}</span>`:''}<span class="sz-mini">Kargo ücretsiz</span></div>
-<strong>Numara seç</strong>
-<div class="sizes" role="group" aria-label="Numara">${u.beden.map(b=>`<button class="sz" type="button" data-sz="${esc(b.b)}" ${b.s>0?'':'disabled'} aria-pressed="false" aria-label="${esc(b.b)} numara${b.s>0?'':' tükendi'}">${esc(b.b)}</button>`).join('')}</div>
+${tekBeden(u)?'':'<strong>Numara seç</strong>'}
+<div class="sizes"${tekBeden(u)?' hidden':''} role="group" aria-label="Numara">${u.beden.map(b=>`<button class="sz" type="button" data-sz="${esc(b.b)}" ${b.s>0?'':'disabled'} aria-pressed="false" aria-label="${esc(b.b)} numara${b.s>0?'':' tükendi'}">${esc(b.b)}</button>`).join('')}</div>
 <p class="hint" id="hint"></p>
 <a class="big" id="pay" target="_blank" rel="noopener" aria-disabled="true">Önce numaranı seç</a>
 <p class="secure">Güvenli ödeme sayfası iyzico'da açılır. Teslimat adresini orada gireceksin.</p>
 <div class="desc">${esc(u.acik||'Ücretsiz kargo ve kolay değişim ile.')}</div></div></div>`;
-  payBtn(null);
+  payBtn(tekBeden(u)&&u.beden[0].s>0?u.beden[0]:null);
   $('pov').classList.add('on');
   if(location.hash!=='#u-'+u.id)location.hash='u-'+u.id;
 };

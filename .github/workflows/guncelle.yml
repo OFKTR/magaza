@@ -30,6 +30,8 @@ jobs:
       - name: XML'i indir, iyzico linklerini esitle, urunler.json olustur
         env:
           XML_URL: ${{ secrets.XML_URL }}
+          XML_URL_2: ${{ secrets.XML_URL_2 }}
+          XML_URL_3: ${{ secrets.XML_URL_3 }}
           IYZICO_API_KEY: ${{ secrets.IYZICO_API_KEY }}
           IYZICO_SECRET_KEY: ${{ secrets.IYZICO_SECRET_KEY }}
         run: python guncelle.py
