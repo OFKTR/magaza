@@ -1,4 +1,4 @@
-# Adım Ayakkabı: Ücretsiz, kendi kendini güncelleyen mağaza
+# NOVER: Ücretsiz, kendi kendini güncelleyen mağaza
 
 Bu mağaza her 3 saatte bir kendiliğinden şunları yapar:
 

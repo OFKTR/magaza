@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--ROBOTS-->
-<title>Adım Ayakkabı</title>
+<title>NOVER</title>
 <meta name="description" content="Erkek ayakkabı, bot ve terlik. Ücretsiz kargo, kolay değişim, kartla güvenli ödeme.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@ h3{font-size:17px;letter-spacing:-.01em;line-height:1.2}
 nav{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
 nav .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:4px 22px;padding:12px max(5vw,16px)}
 .logo{font-stretch:125%;font-weight:800;font-size:22px;letter-spacing:-.03em;text-decoration:none;margin-right:auto}
-.logo span{display:inline-block;background:var(--kraft);padding:0 6px;margin-left:4px;border-radius:3px}
+.logo span{display:inline-block;background:var(--kraft);padding:2px 10px;border-radius:3px;letter-spacing:.06em}
 nav a.l{text-decoration:none;font-weight:600;font-size:15px;padding:10px 0}
 nav a.l:hover{text-decoration:underline}
 .demo{background:var(--ink);color:var(--bg);text-align:center;font-size:14px;padding:8px 16px}
@@ -118,7 +118,7 @@ footer p{margin:6px 0 0;opacity:.8}
 
 <div class="demo" id="demo" hidden>Bu örnek katalogdur. Gerçek XML bağlanınca tüm ürünler, fotoğraflar ve stoklar otomatik gelir.</div>
 <nav><div class="wrap">
-<a class="logo" href="#urunler" id="logo">Adım<span>Ayakkabı</span></a>
+<a class="logo" href="#urunler" id="logo"><span>NOVER</span></a>
 <a class="l" href="#urunler">Ürünler</a>
 <a class="l" href="#nasil">Nasıl sipariş verilir</a>
 <a class="l" href="#teslimat">Teslimat ve iade</a>
@@ -171,8 +171,8 @@ footer p{margin:6px 0 0;opacity:.8}
 </main>
 
 <footer class="band" id="iletisim"><div class="wrap">
-<div><h3 id="fname">Adım Ayakkabı</h3><p>Yetkili bayi. Erkek ayakkabı, bot ve terlik.</p><p id="guncel"></p></div>
-<div><h3>İletişim</h3><p>Telefon: <span id="tel"></span></p><p>E-posta: <span id="eposta"></span></p><p id="sehir"></p></div>
+<div><h3 id="fname">NOVER</h3><p>Yetkili bayi. Erkek ayakkabı, bot ve terlik.</p><p id="guncel"></p></div>
+<div><h3>İletişim</h3><p>Telefon: <span id="tel"></span></p><p id="epostap">E-posta: <span id="eposta"></span></p><p id="sehir"></p></div>
 <div><h3>Çalışma saatleri</h3><p>Siparişleri 7/24 alıyoruz. Sorularına genellikle aynı gün dönüş yapıyoruz.</p></div>
 </div></footer>
 
@@ -268,8 +268,8 @@ window.addEventListener('hashchange',fromHash);
 
 const basla=d=>{
   U=d.urunler||[];M=d.meta||{};
-  if(M.magaza){document.title=M.magaza;$('fname').textContent=M.magaza;const p=M.magaza.split(' ');$('logo').innerHTML=esc(p[0])+(p[1]?'<span>'+esc(p.slice(1).join(' '))+'</span>':'');}
-  $('tel').textContent=M.tel||'';$('eposta').textContent=M.eposta||'';$('sehir').textContent=M.sehir?M.sehir+', Türkiye geneline gönderim':'';
+  if(M.magaza){document.title=M.magaza;$('fname').textContent=M.magaza;const p=M.magaza.split(' ');$('logo').innerHTML=p.length>1?esc(p[0])+'<span>'+esc(p.slice(1).join(' '))+'</span>':'<span>'+esc(p[0])+'</span>';}
+  $('tel').textContent=M.tel||'';$('eposta').textContent=M.eposta||'';$('epostap').hidden=!M.eposta;$('sehir').textContent=M.sehir?M.sehir+', Türkiye geneline gönderim':'';
   $('guncel').textContent=M.guncel?'Katalog güncelleme: '+M.guncel:'';
   if(M.test)$('demo').textContent='TEST MODU: Ödemeler iyzico deneme ortamına gider, gerçek para çekilmez. Test kartı: 5528 7900 0000 0008, ileri bir tarih, CVC 123, SMS kodu 123456.';
   $('demo').hidden=!(M.ornek||M.test);

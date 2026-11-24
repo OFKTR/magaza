@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Adım Ayakkabı - katalog güncelleyici.
+NOVER - katalog güncelleyici.
 
 Bayinin XML linkini indirir, ürünleri okur, ayarlar.json'daki kâr kuralına göre
 satış fiyatını hesaplar, stoğu olmayanları gizler ve site/urunler.json dosyasını yazar.
