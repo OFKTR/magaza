@@ -15,9 +15,11 @@ Gerekli ortam değişkenleri (GitHub Secrets):
 """
 import base64, hashlib, hmac, json, os, random, re, struct, time, urllib.request, urllib.error, zlib
 
-BASE = os.environ.get("IYZICO_BASE_URL", "https://api.iyzipay.com").rstrip("/")
 KEY = os.environ.get("IYZICO_API_KEY", "").strip()
 SECRET = os.environ.get("IYZICO_SECRET_KEY", "").strip()
+# Adres girilmemişse anahtarın türüne göre seçilir: sandbox- ile başlıyorsa deneme ortamı.
+BASE = (os.environ.get("IYZICO_BASE_URL", "").strip()
+        or ("https://sandbox-api.iyzipay.com" if KEY.startswith("sandbox-") else "https://api.iyzipay.com")).rstrip("/")
 ANAHTAR_RE = re.compile(r"Ürün kodu:\s*(.+?)\s*/\s*Numara:\s*(\S+)")
 
 
