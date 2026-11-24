@@ -73,7 +73,23 @@ def temiz_aciklama(s):
     return s.strip()[:1500]
 
 
-def satis_fiyati(alis, kod):
+def _sade(s):
+    s = (s or "").upper()
+    for a, b in {"İ": "I", "Ş": "S", "Ğ": "G", "Ü": "U", "Ö": "O", "Ç": "C", "ı": "I"}.items():
+        s = s.replace(a, b)
+    return re.sub(r"[^A-Z0-9]", "", s)
+
+
+def net_kar(ad="", kat=""):
+    """Ürün adı/kategorisi bir kâr kuralına uyuyorsa o kuralın kârını, yoksa genel kârı döndürür."""
+    metin = _sade(f"{ad} {kat}")
+    for kural in AYAR.get("kar_kurallari", []):
+        if any(_sade(k) in metin for k in kural.get("icerir", [])):
+            return kural["net_kar_tl"]
+    return AYAR.get("net_kar_tl", AYAR.get("kar_tl", 500))
+
+
+def satis_fiyati(alis, kod, ad="", kat=""):
     """
     Satış fiyatını, her şey ödendikten sonra cebine net_kar_tl kalacak şekilde hesaplar.
 
@@ -88,7 +104,7 @@ def satis_fiyati(alis, kod):
     k = AYAR.get("kdv_orani", 10) / 100
     alis_haric = alis / (1 + k) if AYAR.get("alis_kdv_dahil", False) else alis
     kom = AYAR.get("odeme_komisyon_yuzde", 4) / 100
-    net = AYAR.get("net_kar_tl", AYAR.get("kar_tl", 500))
+    net = net_kar(ad, kat)
     f = (alis_haric + net + AYAR.get("kargo_payi_tl", 0)) / (1 - kom - k / (1 + k))
     y = AYAR.get("yuvarla", 50) or 1
     return int(math.ceil(f / y) * y - (1 if y >= 10 else 0))  # ör. 1549, 1599
@@ -179,7 +195,7 @@ def main():
     markalar = {mnorm(m) for m in AYAR.get("sadece_markalar", [])}
     tum_kodlar = set()
 
-    urunler, atlanan, ornek_kar = [], {"stoksuz": 0, "fiyatsiz": 0, "gizli": 0}, []
+    urunler, atlanan, ornek_kar, kural_say = [], {"stoksuz": 0, "fiyatsiz": 0, "gizli": 0}, [], 0
     for el in kok.iter():
         if ad(el) not in urun_adlari:
             continue
@@ -206,8 +222,10 @@ def main():
         if toplam < AYAR.get("en_az_stok", 1):
             atlanan["stoksuz"] += 1
             continue
-        fiyat = satis_fiyati(alis, kod)
+        fiyat = satis_fiyati(alis, kod, isim, kat)
         ornek_kar.append(cebe_kalan(fiyat, alis))
+        if net_kar(isim, kat) != AYAR.get("net_kar_tl", 500):
+            kural_say += 1
         psf = sayi(bul(el, ET_["psf"]))
         urunler.append({
             "id": re.sub(r"[^A-Za-z0-9-]", "", kod) or str(len(urunler)),
@@ -259,6 +277,8 @@ def main():
         json.dump(cikti, f, ensure_ascii=False, separators=(",", ":"))
 
     print(f"Tamam: {len(urunler)} ürün yazıldı -> site/urunler.json")
+    if kural_say:
+        print(f"Özel kâr kuralına giren ürün: {kural_say}")
     if ornek_kar:
         print(f"Çift başı cebe kalan (gelir vergisi öncesi): en az {min(ornek_kar):.0f} TL, ortalama {sum(ornek_kar)/len(ornek_kar):.0f} TL")
     print(f"Atlanan: {atlanan['stoksuz']} stoksuz, {atlanan['fiyatsiz']} fiyatsız, {atlanan['gizli']} gizlenen")

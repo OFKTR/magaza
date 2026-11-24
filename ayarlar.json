@@ -5,6 +5,9 @@
   "sehir": "Çorum",
 
   "net_kar_tl": 500,
+  "kar_kurallari": [
+    { "icerir": ["TİŞÖRT", "TISORT", "T-SHIRT", "TSHIRT"], "net_kar_tl": 100 }
+  ],
   "kargo_payi_tl": 0,
   "odeme_komisyon_yuzde": 4,
   "alis_kdv_dahil": false,
