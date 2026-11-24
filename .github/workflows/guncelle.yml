@@ -39,3 +39,10 @@ jobs:
           path: site
       - id: deploy
         uses: actions/deploy-pages@v4
+        continue-on-error: true
+      - name: Yayin takildiysa bekle
+        if: steps.deploy.outcome == 'failure'
+        run: sleep 45
+      - name: Yayini yeniden dene
+        if: steps.deploy.outcome == 'failure'
+        uses: actions/deploy-pages@v4

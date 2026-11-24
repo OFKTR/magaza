@@ -146,11 +146,18 @@ def mevcut_linkler():
     return linkler
 
 
+def link_adi(urun, beden):
+    """iyzico link adı en fazla 50 karakter olabilir: 'CST Loafer Pelle Erkek Ayakkabı - 42 No'."""
+    ek = f" - {beden} No"
+    kisa = re.sub(r"^\S+\s+-\s+", "", urun["ad"]).strip()
+    return kisa[: 50 - len(ek)].rstrip(" -") + ek
+
+
 def _govde(urun, beden, stok, ayar, gorselli):
     g = {
         "locale": "tr",
         "conversationId": f"{urun['kod']}-{beden}",
-        "name": f"{urun['ad']} - {beden} Numara"[:100],
+        "name": link_adi(urun, beden),
         "description": (f"{urun.get('marka','')} {urun['ad']}. Renk: {urun.get('renk') or '-'}. "
                         f"Ücretsiz kargo. Ürün kodu: {urun['kod']} / Numara: {beden}").strip(),
         "price": f"{urun['fiyat']:.2f}",
@@ -176,6 +183,7 @@ def esitle(urunler, ayar, tum_kodlar):
     mevcut = mevcut_linkler()
     print(f"iyzico: {len(mevcut)} mevcut link bulundu")
     sayac = {"yeni": 0, "guncel": 0, "pasif": 0, "aktif": 0, "hata": 0}
+    deneme = 0
     istenen = set()
 
     for u in urunler:
@@ -187,12 +195,13 @@ def esitle(urunler, ayar, tum_kodlar):
             it = mevcut.get(anahtar)
             try:
                 if not it:
-                    if sayac["yeni"] >= limit:
+                    if deneme >= limit:
                         continue
+                    deneme += 1
                     d = istek("POST", "/v2/iyzilink/products", _govde(u, b["b"], b["s"], ayar, True))
                     b["l"] = d.get("url", "")
                     sayac["yeni"] += 1
-                    time.sleep(0.25)
+                    time.sleep(0.1)
                     continue
                 tok = it.get("token")
                 if _durum(it) == "PASSIVE":
@@ -207,7 +216,8 @@ def esitle(urunler, ayar, tum_kodlar):
                 b["l"] = it.get("url", "")
             except Exception as e:
                 sayac["hata"] += 1
-                print("  uyarı:", e)
+                if sayac["hata"] <= 20:
+                    print("  uyarı:", e)
 
     # Stoktan çıkan veya katalogdan kalkan numaraların linklerini kapat
     for anahtar, it in mevcut.items():
