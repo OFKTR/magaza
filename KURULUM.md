@@ -71,7 +71,7 @@ GitHub'da dosyaya tıkla, kalem simgesiyle düzenle, **Commit changes** de. Site
 | `sadece_markalar` | Boşsa tüm markalar satılır. Örnek: `["CHEKICH"]` | boş |
 | `gizlenecek_kategoriler` / `gizlenecek_kodlar` | Satmak istemediklerin | boş |
 | `ozel_fiyatlar` | Bir ürüne elle fiyat. Örnek: `{"MN002F25490SH": 1799}` | örnek |
-| `satis_acik` | `false` iken site sadece vitrindir, ödeme linki oluşturulmaz. Satışa hazır olunca `true` yap. | false |
+| `satis_acik` | `false` iken site sadece vitrindir, ödeme linki oluşturulmaz. `true` iken iyzico anahtarları girilmişse linkler oluşturulur. | true |
 | `arama_motorundan_gizle` | `true` iken site Google'da çıkmaz. Satışa başlayınca `false` yap. | true |
 | `taksit` | Müşteriye taksit seçeneği (komisyonu artırır) | false |
 | `psf_goster` | XML'deki `Price` alanını üstü çizili gösterir | false |

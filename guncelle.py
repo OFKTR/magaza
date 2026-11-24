@@ -248,6 +248,7 @@ def main():
         "tel": AYAR.get("telefon_yazisi", ""),
         "eposta": AYAR.get("eposta", ""),
         "odeme": odeme,
+        "test": odeme and "sandbox" in os.environ.get("IYZICO_BASE_URL", ""),
         "sehir": AYAR.get("sehir", ""),
         "guncel": datetime.now(tr).strftime("%d.%m.%Y %H:%M"),
         "ornek": ornek,
