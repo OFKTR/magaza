@@ -182,6 +182,13 @@ def esitle(urunler, ayar, tum_kodlar):
     tani()
     mevcut = mevcut_linkler()
     print(f"iyzico: {len(mevcut)} mevcut link bulundu")
+    satilan = [(k, int(it.get("soldCount") or 0)) for k, it in mevcut.items() if int(it.get("soldCount") or 0) > 0]
+    if satilan:
+        print(f"iyzico SATIŞLAR: {len(satilan)} numarada toplam {sum(n for _, n in satilan)} satış")
+        for (kod, beden), n in sorted(satilan)[:30]:
+            print(f"  - {kod} / {beden} numara: {n} adet")
+    else:
+        print("iyzico SATIŞLAR: henüz satış yok")
     sayac = {"yeni": 0, "guncel": 0, "pasif": 0, "aktif": 0, "hata": 0}
     deneme = 0
     istenen = set()
