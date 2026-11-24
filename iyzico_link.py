@@ -25,9 +25,31 @@ def aktif_mi():
     return bool(KEY and SECRET)
 
 
+IMZADA_SORGU = False  # iyzico imzaya sorgu kısmını (?page=..) istiyorsa otomatik True olur
+
+
+def tani():
+    """Anahtarları göstermeden olası kurulum hatalarını yazdırır."""
+    sorun = []
+    print(f"iyzico adresi: {BASE}")
+    print(f"API anahtarı: {len(KEY)} karakter, 'sandbox-' ile başlıyor: {KEY.startswith('sandbox-')}")
+    print(f"Güvenlik anahtarı: {len(SECRET)} karakter, 'sandbox-' ile başlıyor: {SECRET.startswith('sandbox-')}")
+    if KEY.startswith("sandbox-") != ("sandbox" in BASE):
+        sorun.append("Deneme (sandbox) anahtarı canlı adresle ya da canlı anahtar deneme adresiyle kullanılıyor. "
+                     "Deneme anahtarı için IYZICO_BASE_URL = https://sandbox-api.iyzipay.com olmalı.")
+    if KEY.startswith("sandbox-") != SECRET.startswith("sandbox-"):
+        sorun.append("Anahtarlardan biri deneme, diğeri canlı ortama ait görünüyor.")
+    if KEY and KEY == SECRET:
+        sorun.append("API anahtarı ile güvenlik anahtarı aynı girilmiş.")
+    for s in sorun:
+        print("  OLASI SORUN:", s)
+    return sorun
+
+
 def _imza(yol, govde):
     rnd = str(int(time.time() * 1000)) + str(random.randint(100000000, 999999999))
-    yol = yol.split("?", 1)[0]
+    if not IMZADA_SORGU:
+        yol = yol.split("?", 1)[0]
     payload = rnd + yol + (govde or "")
     sig = hmac.new(SECRET.encode(), payload.encode("utf-8"), hashlib.sha256).hexdigest()
     auth = f"apiKey:{KEY}&randomKey:{rnd}&signature:{sig}"
@@ -35,6 +57,22 @@ def _imza(yol, govde):
 
 
 def istek(metod, yol, veri=None):
+    global IMZADA_SORGU
+    try:
+        return _istek(metod, yol, veri)
+    except RuntimeError as e:
+        if "?" in yol and "uthentication" in str(e) and not IMZADA_SORGU:
+            IMZADA_SORGU = True
+            try:
+                sonuc = _istek(metod, yol, veri)
+                print("iyzico: imza sorgu kısmıyla kabul edildi, bu yöntemle devam ediliyor.")
+                return sonuc
+            except RuntimeError:
+                IMZADA_SORGU = False
+        raise
+
+
+def _istek(metod, yol, veri=None):
     govde = json.dumps(veri, ensure_ascii=False, separators=(",", ":")) if veri is not None else ""
     rnd, auth = _imza(yol, govde)
     req = urllib.request.Request(BASE + yol, method=metod, data=govde.encode("utf-8") if govde else None,
@@ -132,6 +170,7 @@ def _durum(it):
 def esitle(urunler, ayar, tum_kodlar):
     """urunler: sitede gösterilecek (stoklu) ürünler. tum_kodlar: XML'deki tüm ürün kodları."""
     limit = int(ayar.get("iyzico_tur_basina_en_fazla_yeni", 300))
+    tani()
     mevcut = mevcut_linkler()
     print(f"iyzico: {len(mevcut)} mevcut link bulundu")
     sayac = {"yeni": 0, "guncel": 0, "pasif": 0, "aktif": 0, "hata": 0}
