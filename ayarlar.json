@@ -12,7 +12,7 @@
   ],
 
   "kaynaklar": [
-    { "ad": "Chekich", "xml_env": "XML_URL" },
+    { "ad": "Chekich", "xml_env": "XML_URL", "en_az_alis_kdv_dahil_tl": 1045 },
     { "ad": "Tedarikçi 2", "xml_env": "XML_URL_2" },
     { "ad": "Tedarikçi 3", "xml_env": "XML_URL_3" }
   ],

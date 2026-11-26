@@ -227,6 +227,12 @@ def kaynak_oku(kok, urunler, atlanan, ornek_kar, tum_kodlar, kural_ref, gorulen_
             continue
         kdv_txt = bul(el, ET_.get("kdv", []))
         kdv = sayi(kdv_txt) if kdv_txt else None
+        esik = KAYNAK.get("en_az_alis_kdv_dahil_tl")
+        if esik:
+            kdvli = alis if KAYNAK.get("alis_kdv_dahil", AYAR.get("alis_kdv_dahil", False)) else alis * (1 + _kdv(kdv))
+            if kdvli < esik:
+                atlanan["ucuz"] += 1
+                continue
         st_txt = bul(el, ET_["stok"])
         toplam = int(sayi(st_txt)) if st_txt else 0
         bd = bedenler(el, toplam)
@@ -265,7 +271,7 @@ def kaynak_oku(kok, urunler, atlanan, ornek_kar, tum_kodlar, kural_ref, gorulen_
 
 def main():
     global KAYNAK
-    urunler, atlanan, ornek_kar = [], {"stoksuz": 0, "fiyatsiz": 0, "gizli": 0}, []
+    urunler, atlanan, ornek_kar = [], {"stoksuz": 0, "fiyatsiz": 0, "gizli": 0, "ucuz": 0}, []
     tum_kodlar, kural_ref, gorulen_id = set(), [0], set()
     kaynaklar = kaynaklari_al()
     ornek = not kaynaklar
@@ -327,7 +333,8 @@ def main():
         print(f"Özel kâr kuralına giren ürün: {kural_say}")
     if ornek_kar:
         print(f"Çift başı cebe kalan (gelir vergisi öncesi): en az {min(ornek_kar):.0f} TL, ortalama {sum(ornek_kar)/len(ornek_kar):.0f} TL")
-    print(f"Atlanan: {atlanan['stoksuz']} stoksuz, {atlanan['fiyatsiz']} fiyatsız, {atlanan['gizli']} gizlenen")
+    print(f"Atlanan: {atlanan['stoksuz']} stoksuz, {atlanan['fiyatsiz']} fiyatsız, {atlanan['gizli']} gizlenen, "
+          f"{atlanan['ucuz']} ücretsiz kargo sınırının altında")
 
     # Ürünleri sayfanın içine gömerek site/index.html'i üret (dosya çift tıklanınca da çalışır)
     sablon = open(os.path.join(KOK, "sablon.html"), encoding="utf-8").read()

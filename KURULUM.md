@@ -131,3 +131,5 @@ Notlar:
 - Numarası olmayan ürünlerde (saat, kemer) sitede numara seçimi çıkmaz, ödeme butonu doğrudan açılır.
 - Kâr kuralları: kemer 150 TL, saat 250 TL, tişört 100 TL, diğer her şey 500 TL (`kar_kurallari`).
 - Yeni tedarikçinin alış fiyatı KDV dahilse, `kaynaklar` içinde o tedarikçiye `"alis_kdv_dahil": true` ekle.
+
+- **Ücretsiz kargo sınırı:** Chekich 1.045 TL altındaki siparişlerde kargoyu ücretsiz yapmadığı için, KDV dahil alış fiyatı 1.045 TL'nin altında olan Chekich ürünleri satışa konmaz (`kaynaklar` > `en_az_alis_kdv_dahil_tl`). Bu ürünlerin iyzico linkleri de otomatik kapatılır. Sınırı değiştirmek ya da kaldırmak için bu değeri düzenle veya sil.
