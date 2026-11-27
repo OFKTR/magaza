@@ -89,6 +89,8 @@ def net_kar(ad="", kat=""):
     for kural in AYAR.get("kar_kurallari", []):
         if any(_sade(k) in metin for k in kural.get("icerir", [])):
             return kural["net_kar_tl"]
+        if _sade(kat) and _sade(kat) in {_sade(k) for k in kural.get("kategori", [])}:
+            return kural["net_kar_tl"]
     return KAYNAK.get("net_kar_tl", AYAR.get("net_kar_tl", AYAR.get("kar_tl", 500)))
 
 

@@ -133,3 +133,9 @@ Notlar:
 - Yeni tedarikçinin alış fiyatı KDV dahilse, `kaynaklar` içinde o tedarikçiye `"alis_kdv_dahil": true` ekle.
 
 - **Ücretsiz kargo sınırı:** İstenirse bir tedarikçinin ucuz ürünleri gizlenebilir: `kaynaklar` içinde o tedarikçiye `"en_az_alis_kdv_dahil_tl": 1045` gibi bir değer ekle. Şu an kapalı.
+
+## Kâr ve indirim düzeni (27 Kasım)
+
+- Satış fiyatındaki net kâr: ayakkabı 300 TL, bot 350 TL (kategori "Bot"), tişört 50 TL, kemer 150 TL, saat 250 TL.
+- Üstü çizili eski fiyat ve "%X indirim" etiketi otomatik: ürünün son 10 günde sitede uygulanan en düşük fiyatı bugünkünden en az %5 yüksekse gösterilir. Uydurma liste fiyatı kullanılmaz (Ticari Reklam ve Haksız Ticari Uygulamalar Yönetmeliği, 10 gün kuralı).
+- Gerçek bir kampanya yapmak için: Fiyatları (ör. ayakkabıda 500 TL kâr) en az 10 gün sitede uygula, sonra kârı düşür. Etiket kendiliğinden çıkar.

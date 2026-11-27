@@ -11,9 +11,10 @@
 
   "net_kar_tl": 300,
   "kar_kurallari": [
-    { "icerir": ["TİŞÖRT", "TISORT", "T-SHIRT", "TSHIRT"], "net_kar_tl": 100 },
+    { "icerir": ["TİŞÖRT", "TISORT", "T-SHIRT", "TSHIRT"], "net_kar_tl": 50 },
     { "icerir": ["KEMER"], "net_kar_tl": 150 },
-    { "icerir": ["KOL SAATİ", "KOLSAATI", "SAAT"], "net_kar_tl": 250 }
+    { "icerir": ["KOL SAATİ", "KOLSAATI", "SAAT"], "net_kar_tl": 250 },
+    { "kategori": ["Bot", "Çizme"], "net_kar_tl": 350 }
   ],
 
   "kaynaklar": [
