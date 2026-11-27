@@ -4,7 +4,7 @@
   "eposta": "",
   "sehir": "Çorum",
 
-  "net_kar_tl": 500,
+  "net_kar_tl": 300,
   "kar_kurallari": [
     { "icerir": ["TİŞÖRT", "TISORT", "T-SHIRT", "TSHIRT"], "net_kar_tl": 100 },
     { "icerir": ["KEMER"], "net_kar_tl": 150 },
@@ -12,7 +12,7 @@
   ],
 
   "kaynaklar": [
-    { "ad": "Chekich", "xml_env": "XML_URL", "en_az_alis_kdv_dahil_tl": 1045 },
+    { "ad": "Chekich", "xml_env": "XML_URL" },
     { "ad": "Tedarikçi 2", "xml_env": "XML_URL_2" },
     { "ad": "Tedarikçi 3", "xml_env": "XML_URL_3" }
   ],

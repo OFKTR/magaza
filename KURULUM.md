@@ -62,7 +62,7 @@ GitHub'da dosyaya tıkla, kalem simgesiyle düzenle, **Commit changes** de. Site
 
 | Ayar | Anlamı | Şu anki değer |
 |---|---|---|
-| `net_kar_tl` | KDV ve iyzico kesintisinden sonra her çiftten cebine kalacak para | 500 |
+| `net_kar_tl` | KDV ve iyzico kesintisinden sonra her çiftten cebine kalacak para | 300 |
 | `alis_kdv_dahil` | XML'deki `buying_price` KDV dahil mi? | false (KDV hariç kabul edildi) |
 | `kdv_orani` | Alışa eklenecek KDV | 10 |
 | `odeme_komisyon_yuzde` | iyzico'nun kestiği oran (komisyonun KDV'si dahil, yuvarlak) | 4 |
@@ -132,4 +132,4 @@ Notlar:
 - Kâr kuralları: kemer 150 TL, saat 250 TL, tişört 100 TL, diğer her şey 500 TL (`kar_kurallari`).
 - Yeni tedarikçinin alış fiyatı KDV dahilse, `kaynaklar` içinde o tedarikçiye `"alis_kdv_dahil": true` ekle.
 
-- **Ücretsiz kargo sınırı:** Chekich 1.045 TL altındaki siparişlerde kargoyu ücretsiz yapmadığı için, KDV dahil alış fiyatı 1.045 TL'nin altında olan Chekich ürünleri satışa konmaz (`kaynaklar` > `en_az_alis_kdv_dahil_tl`). Bu ürünlerin iyzico linkleri de otomatik kapatılır. Sınırı değiştirmek ya da kaldırmak için bu değeri düzenle veya sil.
+- **Ücretsiz kargo sınırı:** İstenirse bir tedarikçinin ucuz ürünleri gizlenebilir: `kaynaklar` içinde o tedarikçiye `"en_az_alis_kdv_dahil_tl": 1045` gibi bir değer ekle. Şu an kapalı.
