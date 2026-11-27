@@ -128,7 +128,7 @@ def satis_fiyati(alis, kod, ad="", kat="", kdv=None):
     alis_haric = alis / (1 + k) if KAYNAK.get("alis_kdv_dahil", AYAR.get("alis_kdv_dahil", False)) else alis
     kom = AYAR.get("odeme_komisyon_yuzde", 4) / 100
     net = net_kar(ad, kat)
-    f = (alis_haric + net + AYAR.get("kargo_payi_tl", 0)) / (1 - kom - k / (1 + k))
+    f = (alis_haric + net + (AYAR.get("kargo_payi_tl", 0) + AYAR.get("kapida_odeme_ucreti_tl", 0))) / (1 - kom - k / (1 + k))
     y = AYAR.get("yuvarla", 50) or 1
     return int(math.ceil(f / y) * y - (1 if y >= 10 else 0))  # ör. 1549, 1599
 
@@ -137,7 +137,7 @@ def cebe_kalan(fiyat, alis, kdv=None):
     k = _kdv(kdv)
     alis_haric = alis / (1 + k) if KAYNAK.get("alis_kdv_dahil", AYAR.get("alis_kdv_dahil", False)) else alis
     kom = AYAR.get("odeme_komisyon_yuzde", 4) / 100
-    return fiyat * (1 - kom) - alis_haric * (1 + k) - (fiyat * k / (1 + k) - alis_haric * k) - AYAR.get("kargo_payi_tl", 0)
+    return fiyat * (1 - kom) - alis_haric * (1 + k) - (fiyat * k / (1 + k) - alis_haric * k) - (AYAR.get("kargo_payi_tl", 0) + AYAR.get("kapida_odeme_ucreti_tl", 0))
 
 
 def resimler(el):

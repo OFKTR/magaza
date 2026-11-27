@@ -24,7 +24,8 @@
     { "ad": "Tedarikçi 3", "xml_env": "XML_URL_3" }
   ],
   "kargo_payi_tl": 0,
-  "odeme_komisyon_yuzde": 4,
+  "odeme_komisyon_yuzde": 0,
+  "kapida_odeme_ucreti_tl": 150,
   "alis_kdv_dahil": true,
   "kdv_orani": 10,
   "yuvarla": 50,

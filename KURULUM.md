@@ -147,3 +147,9 @@ Notlar:
 - İndirim etiketi 9–18 Aralık arasında görünür, sonra fiyat normal fiyat sayılır ve etiket kalkar (10 gün kuralı).
 - Ayar: `ayarlar.json` > `kampanya` (baslangic, indirim_tl) ve kâr kurallarındaki `kampanya_indirim_tl`.
 - Önemli: Liste döneminde müşterilere de bu liste fiyatlarından satış yapılmalı; aksi halde "eski fiyat" gerçeği yansıtmaz.
+
+## Kapıda ödeme (27 Kasım)
+
+- Satışlar WhatsApp/Instagram üzerinden, satıcının kapıda ödemeli gönderimiyle yapılır; kart ödemesi (iyzico) kapalı.
+- Kapıda ödeme ek ücreti 150 TL fiyatlara eklenir (`kapida_odeme_ucreti_tl`); kart komisyonu payı kaldırıldı (`odeme_komisyon_yuzde`: 0).
+- Satıcı faturayı müşteri adına keser, kâr her cuma komisyon olarak IBAN'a veya bakiyeye ödenir.
