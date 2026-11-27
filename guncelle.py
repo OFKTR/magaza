@@ -414,7 +414,18 @@ def cinsiyete_gore_ayir(urunler):
     say = {"Kadın": 0, "Erkek": 0, "": 0}
     for u in urunler:
         ad = _sade(u["ad"])
-        cins = "Kadın" if "KADIN" in ad else ("Erkek" if "ERKEK" in ad else "")
+        metin = ad + _sade(u["kat"])
+        cins = "Kadın" if "KADIN" in metin else ("Erkek" if "ERKEK" in metin else "")
+        if not cins:
+            for kelime, c in AYAR.get("cinsiyet_kelime", {}).items():
+                if _sade(kelime) in metin:
+                    cins = c
+                    break
+        if not cins:
+            for on, c in AYAR.get("cinsiyet_kod_on_eki", {}).items():
+                if ad.startswith(_sade(on)):
+                    cins = c
+                    break
         tur = u["kat"]
         if _sade(tur) in ("DIGER", ""):
             for anahtar, ad_ in TUR_ESLE:
@@ -422,7 +433,7 @@ def cinsiyete_gore_ayir(urunler):
                     tur = ad_
                     break
         u["cins"] = cins
-        u["kat"] = f"{cins} {tur}".strip()
+        u["kat"] = tur if (cins and _sade(cins) in _sade(tur)) else f"{cins} {tur}".strip()
         say[cins] += 1
     print(f"Cinsiyet: {say['Kadın']} kadın, {say['Erkek']} erkek, {say['']} belirsiz")
     for u in [u for u in urunler if not u["cins"]][:40]:
