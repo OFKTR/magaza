@@ -60,6 +60,7 @@ details pre{white-space:pre-wrap;font:14px/1.45 inherit;font-family:inherit;colo
 </header>
 <div class="bar">
 <input class="f" id="q" type="search" placeholder="Model, kod veya renk ara" aria-label="Ara">
+<select class="f" id="cins" aria-label="Kadın / Erkek"><option value="">Kadın + Erkek</option><option>Kadın</option><option>Erkek</option></select>
 <select class="f" id="cat" aria-label="Kategori"><option value="">Tüm kategoriler</option></select>
 <select class="f" id="sort" aria-label="Sırala"><option value="stok">En çok stoklu</option><option value="ucuz">Fiyat: artan</option><option value="pahali">Fiyat: azalan</option><option value="ind">İndirimdekiler önce</option></select>
 </div>
@@ -86,7 +87,7 @@ const norm=s=>String(s||'').toLocaleUpperCase('tr-TR').replace(/İ/g,'I').replac
 const baslik=u=>String(u.ad).replace(/^\S+\s+-\s+/,'');
 const ind=u=>u.psf>u.fiyat?Math.round((1-u.fiyat/u.psf)*100):0;
 const tag=s=>'#'+String(s).toLocaleLowerCase('tr-TR').replace(/[^a-zçğıöşü0-9]/g,'');
-let U=[],M={},q='',cat='',sort='stok',limit=30;
+let cinsF='';let U=[],M={},q='',cat='',sort='stok',limit=30;
 const site=()=>location.origin+location.pathname.replace(/katalog\.html$/,'');
 const link=u=>site()+'#u-'+u.id;
 const numaralar=u=>u.beden.filter(b=>b.s>0).map(b=>b.b).filter(b=>b!=='Standart');
@@ -113,11 +114,11 @@ const instagram=u=>{
     `🔗 Profildeki linkten tüm modeller`,
     `Ürün kodu: ${u.id}`,
     '',
-    ['#nover','#erkekayakkabı','#ayakkabı',tag(u.kat),'#kapıdaödeme','#ücretsizkargo','#erkekmodası','#kombin'].join(' ')
+    ['#nover',u.cins==='Kadın'?'#kadınayakkabı':u.cins==='Erkek'?'#erkekayakkabı':'#ayakkabı','#ayakkabı',tag(u.kat),'#kapıdaödeme','#ücretsizkargo',u.cins==='Kadın'?'#kadınmodası':'#erkekmodası','#kombin'].join(' ')
   ].filter((x,k,a)=>x!==''||(a[k-1]!=='')).join('\n');
 };
 const liste=()=>{
-  let l=U.filter(u=>(!cat||u.kat===cat)&&(!q||norm(u.id+' '+u.ad+' '+u.renk).includes(q)));
+  let l=U.filter(u=>(!cinsF||u.cins===cinsF)&&(!cat||u.kat===cat)&&(!q||norm(u.id+' '+u.ad+' '+u.renk).includes(q)));
   if(sort==='stok')l=[...l].sort((a,b)=>b.stok-a.stok);
   if(sort==='ucuz')l=[...l].sort((a,b)=>a.fiyat-b.fiyat);
   if(sort==='pahali')l=[...l].sort((a,b)=>b.fiyat-a.fiyat);
@@ -150,6 +151,7 @@ document.addEventListener('click',e=>{
 });
 $('q').addEventListener('input',e=>{q=norm(e.target.value.trim());limit=30;ciz()});
 $('cat').addEventListener('change',e=>{cat=e.target.value;limit=30;ciz()});
+$('cins').addEventListener('change',e=>{cinsF=e.target.value;limit=30;ciz()});
 $('sort').addEventListener('change',e=>{sort=e.target.value;ciz()});
 const d=window.__VERI||{urunler:[],meta:{}};
 U=d.urunler||[];M=d.meta||{};

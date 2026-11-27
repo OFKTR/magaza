@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--ROBOTS-->
 <title>NOVER</title>
-<meta name="description" content="Erkek ayakkabı, bot ve terlik. Ücretsiz kargo, kapıda ödeme, kolay değişim. WhatsApp'tan sipariş.">
+<meta name="description" content="Kadın ve erkek ayakkabı, bot, babet ve terlik. Ücretsiz kargo, kapıda ödeme, kolay değişim. WhatsApp'tan sipariş.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&display=swap" rel="stylesheet">
 <style>
@@ -44,6 +44,10 @@ nav a.l:hover{text-decoration:underline}
 .prom b{flex:none;width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:15px}
 .tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px}
 #cats{display:flex;flex-wrap:wrap;gap:8px}
+.seg{display:flex;border:1.5px solid var(--ink);border-radius:24px;overflow:hidden;flex:none}
+.seg button{font:700 15px Archivo,sans-serif;min-height:44px;padding:0 18px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.seg button+button{border-left:1.5px solid var(--ink)}
 .chip{font:600 15px Archivo,sans-serif;min-height:44px;padding:0 16px;border-radius:22px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap}
 .chip small{font-weight:500;opacity:.65;margin-left:4px}
 .chip[aria-pressed=true]{background:var(--ink);color:var(--bg)}
@@ -133,7 +137,7 @@ footer p{margin:6px 0 0;opacity:.8}
 
 <header class="band top"><div class="wrap">
 <div>
-<h1>Erkek ayakkabı ve botlar, ücretsiz kargoyla kapında</h1>
+<h1>Kadın ve erkek ayakkabı, ücretsiz kargoyla kapında</h1>
 <p>Modelini ve numaranı seç, siparişini WhatsApp'tan tek mesajla ver. Ödemeyi kapıda ya da havale/EFT ile yaparsın. Stoklar birkaç saatte bir güncellenir; gördüğün numara stokta demektir.</p>
 </div>
 <ul class="prom">
@@ -147,9 +151,10 @@ footer p{margin:6px 0 0;opacity:.8}
 <section class="band" id="urunler"><div class="wrap">
 <h2>Ürünler</h2>
 <div class="tools">
+<div class="seg" id="cins" role="group" aria-label="Kadın / Erkek"><button type="button" data-cins="" aria-pressed="true">Tümü</button><button type="button" data-cins="Kadın" aria-pressed="false">Kadın</button><button type="button" data-cins="Erkek" aria-pressed="false">Erkek</button></div>
 <div id="cats" role="group" aria-label="Kategori"></div>
 <div class="ctl">
-<input class="f" id="q" type="search" placeholder="Model ara, ör. CH257" aria-label="Model ara">
+<input class="f" id="q" type="search" placeholder="Model, renk ya da kod ara" aria-label="Model ara">
 <select class="f" id="sort" aria-label="Sırala"><option value="on">Önerilen</option><option value="ucuz">Fiyat: artan</option><option value="pahali">Fiyat: azalan</option><option value="stok">En çok stoklu</option></select>
 </div>
 </div>
@@ -177,7 +182,7 @@ footer p{margin:6px 0 0;opacity:.8}
 </main>
 
 <footer class="band" id="iletisim"><div class="wrap">
-<div><h3 id="fname">NOVER</h3><p>Yetkili bayi. Erkek ayakkabı, bot ve terlik.</p><p id="guncel"></p></div>
+<div><h3 id="fname">NOVER</h3><p>Yetkili bayi. Kadın ve erkek ayakkabı, bot, babet ve terlik.</p><p id="guncel"></p></div>
 <div><h3>İletişim</h3><p>Telefon: <span id="tel"></span></p><p id="epostap">E-posta: <span id="eposta"></span></p><p id="sehir"></p></div>
 <div><h3>Çalışma saatleri</h3><p>Siparişleri 7/24 alıyoruz. Sorularına genellikle aynı gün dönüş yapıyoruz.</p></div>
 </div></footer>
@@ -200,21 +205,24 @@ const baslik=u=>String(u.ad).replace(/^\S+\s+-\s+/,'');
 const renkler=u=>{const d=U.filter(x=>x.model&&x.model===u.model&&x.id!==u.id);return d.length?`<div class="code" style="margin-top:10px">Diğer renkler</div><div class="sizes" style="margin-top:6px">${d.map(x=>`<button class="sz" type="button" data-renk="${esc(x.id)}">${esc(x.renk||baslik(x))}</button>`).join('')}</div>`:''};
 const tekBeden=u=>u.beden.length===1&&u.beden[0].b==='Standart';
 
-let U=[],M={},cat='Tümü',q='',sort='on',limit=24,cur=null;
+let cins='';let U=[],M={},cat='Tümü',q='',sort='on',limit=24,cur=null;
 
 document.addEventListener('error',e=>{const t=e.target;if(t.tagName==='IMG'&&t.dataset.u){const u=U.find(x=>x.id===t.dataset.u);if(u){const d=document.createElement('div');d.style.cssText='display:grid;place-items:center;width:100%;height:100%';d.innerHTML=cizim(u);t.replaceWith(d)}}},true);
 
 const liste=()=>{
-  let l=U.filter(u=>(cat==='Tümü'||u.kat===cat)&&(!q||norm(u.skod+' '+u.model+' '+u.ad+' '+u.renk+' '+u.marka).includes(q)));
+  let l=U.filter(u=>(!cins||u.cins===cins)&&(cat==='Tümü'||u.kat===cat)&&(!q||norm(u.skod+' '+u.model+' '+u.ad+' '+u.renk+' '+u.marka).includes(q)));
   if(sort==='ucuz')l=[...l].sort((a,b)=>a.fiyat-b.fiyat);
   if(sort==='pahali')l=[...l].sort((a,b)=>b.fiyat-a.fiyat);
   if(sort==='stok')l=[...l].sort((a,b)=>b.stok-a.stok);
   return l;
 };
 const drawCats=()=>{
-  const say={};U.forEach(u=>say[u.kat]=(say[u.kat]||0)+1);
+  const V=U.filter(u=>!cins||u.cins===cins);
+  const say={};V.forEach(u=>say[u.kat]=(say[u.kat]||0)+1);
   const ks=['Tümü',...Object.keys(say).sort((a,b)=>say[b]-say[a])];
-  $('cats').innerHTML=ks.map(k=>`<button class="chip" type="button" data-cat="${esc(k)}" aria-pressed="${k===cat}">${esc(k)}<small>${k==='Tümü'?U.length:say[k]}</small></button>`).join('');
+  const ad=k=>cins&&k.startsWith(cins+' ')?k.slice(cins.length+1):k;
+  $('cats').innerHTML=ks.map(k=>`<button class="chip" type="button" data-cat="${esc(k)}" aria-pressed="${k===cat}">${esc(ad(k))}<small>${k==='Tümü'?V.length:say[k]}</small></button>`).join('');
+  document.querySelectorAll('#cins button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cins===cins));
 };
 const drawGrid=()=>{
   const l=liste();
@@ -272,7 +280,8 @@ const closeAll=()=>{$('pov').classList.remove('on');if(location.hash.startsWith(
 
 document.addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;
-  if(t.dataset.cat!==undefined){cat=t.dataset.cat;limit=24;drawCats();drawGrid();}
+  if(t.dataset.cins!==undefined){cins=t.dataset.cins;cat='Tümü';limit=24;drawCats();drawGrid();const h=cins==='Kadın'?'kadin':cins==='Erkek'?'erkek':'urunler';if(location.hash!=='#'+h)history.replaceState(null,'','#'+h);}
+  else if(t.dataset.cat!==undefined){cat=t.dataset.cat;limit=24;drawCats();drawGrid();}
   else if(t.classList.contains('card')){openU(t.dataset.u);}
   else if(t.dataset.renk){openU(t.dataset.renk);}
   else if(t.dataset.sz!==undefined){document.querySelectorAll('.sz').forEach(b=>b.setAttribute('aria-pressed',b===t));$('hint').textContent='';const b=cur.beden.find(x=>x.b===t.dataset.sz);if(b&&b.s<=2)$('hint').textContent='Bu numaradan son '+b.s+' çift kaldı.';payBtn(b);}
@@ -287,7 +296,7 @@ document.addEventListener('keydown',e=>{
 });
 $('q').addEventListener('input',e=>{q=norm(e.target.value.trim());limit=24;drawGrid()});
 $('sort').addEventListener('change',e=>{sort=e.target.value;drawGrid()});
-const fromHash=()=>{const h=location.hash;if(h.startsWith('#u-'))openU(h.slice(3));else $('pov').classList.remove('on')};
+const fromHash=()=>{const h=location.hash;if(h==='#kadin'||h==='#erkek'){const c=h==='#kadin'?'Kadın':'Erkek';if(cins!==c){cins=c;cat='Tümü';drawCats();drawGrid();}$('pov').classList.remove('on');$('urunler').scrollIntoView();return}if(h.startsWith('#u-'))openU(h.slice(3));else $('pov').classList.remove('on')};
 window.addEventListener('hashchange',fromHash);
 
 const basla=d=>{

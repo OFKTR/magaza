@@ -403,6 +403,30 @@ def fiyat_gecmisi_uygula(urunler):
     return say
 
 
+TUR_ESLE = [("BABET", "Babet"), ("TERLIK", "Terlik"), ("SANDALET", "Sandalet"), ("TERLİK", "Terlik"),
+            ("CIZME", "Çizme"), ("BOT", "Bot"), ("LOAFER", "Loafer"), ("SNEAKER", "Spor Ayakkabı")]
+
+
+def cinsiyete_gore_ayir(urunler):
+    """Ürün adındaki Kadın/Erkek ifadesine göre 'cins' alanı ekler ve görünen kategoriyi
+    'Kadın Bot', 'Erkek Spor Ayakkabı' gibi yapar. Fiyat hesabı daha önce, orijinal
+    kategoriyle yapıldığı için fiyatlar değişmez. 'Diğer' kategorisindekilerin türü addan bulunur."""
+    say = {"Kadın": 0, "Erkek": 0, "": 0}
+    for u in urunler:
+        ad = _sade(u["ad"])
+        cins = "Kadın" if "KADIN" in ad else ("Erkek" if "ERKEK" in ad else "")
+        tur = u["kat"]
+        if _sade(tur) in ("DIGER", ""):
+            for anahtar, ad_ in TUR_ESLE:
+                if _sade(anahtar) in ad:
+                    tur = ad_
+                    break
+        u["cins"] = cins
+        u["kat"] = f"{cins} {tur}".strip()
+        say[cins] += 1
+    print(f"Cinsiyet: {say['Kadın']} kadın, {say['Erkek']} erkek, {say['']} belirsiz")
+
+
 def main():
     global KAYNAK
     urunler, atlanan, ornek_kar = [], {"stoksuz": 0, "fiyatsiz": 0, "gizli": 0, "ucuz": 0}, []
@@ -453,6 +477,8 @@ def main():
 
     if AYAR.get("kampanya", {}).get("baslangic"):
         print(f"Kampanya ({AYAR['kampanya']['baslangic']}): {'AKTİF' if kampanya_aktif() else 'henüz başlamadı, liste fiyatları uygulanıyor'}")
+    if AYAR.get("cinsiyete_gore_kategori", True):
+        cinsiyete_gore_ayir(urunler)
     indirim_say = fiyat_gecmisi_uygula(urunler)
     if indirim_say:
         print(f"Gerçek indirim etiketi alan ürün: {indirim_say} (son 10 günün en düşük fiyatına göre)")
