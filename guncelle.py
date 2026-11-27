@@ -492,6 +492,12 @@ def main():
     with open(os.path.join(KOK, "site", "index.html"), "w", encoding="utf-8") as f:
         f.write(sayfa)
     print("site/index.html üretildi")
+    ks = os.path.join(KOK, "katalog_sablon.html")
+    if os.path.exists(ks):
+        k = open(ks, encoding="utf-8").read().replace("<!--VERI-->", f"<script>window.__VERI={gomulu};</script>")
+        with open(os.path.join(KOK, "site", "katalog.html"), "w", encoding="utf-8") as f:
+            f.write(k)
+        print("site/katalog.html üretildi")
 
 if __name__ == "__main__":
     main()
