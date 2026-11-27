@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--ROBOTS-->
 <title>NOVER</title>
-<meta name="description" content="Erkek ayakkabı, bot ve terlik. Ücretsiz kargo, kolay değişim, kartla güvenli ödeme.">
+<meta name="description" content="Erkek ayakkabı, bot ve terlik. Ücretsiz kargo, kapıda ödeme, kolay değişim. WhatsApp'tan sipariş.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&display=swap" rel="stylesheet">
 <style>
@@ -100,6 +100,7 @@ footer p{margin:6px 0 0;opacity:.8}
 .sz:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}
 .hint{font-size:14px;color:var(--warn);min-height:20px;margin:0}
 .big{display:flex;align-items:center;justify-content:center;text-decoration:none;width:100%;font:800 16px Archivo,sans-serif;min-height:54px;border-radius:27px;border:0;background:var(--wa);color:#fff;cursor:pointer;margin-top:8px}
+.big.alt2{background:var(--card);color:var(--ink);border:2px solid var(--wa)}
 .big[aria-disabled=true]{background:var(--line);color:var(--soft);pointer-events:none}
 .secure{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13px;color:var(--soft);margin:10px 0 0}
 .big.ok{background:var(--wa)}
@@ -133,11 +134,11 @@ footer p{margin:6px 0 0;opacity:.8}
 <header class="band top"><div class="wrap">
 <div>
 <h1>Erkek ayakkabı ve botlar, ücretsiz kargoyla kapında</h1>
-<p>Modelini ve numaranı seç, kartınla güvenle öde. Ödeme iyzico güvencesiyle alınır, kart bilgin bizde saklanmaz. Stoklar birkaç saatte bir güncellenir; gördüğün numara stokta demektir.</p>
+<p>Modelini ve numaranı seç, siparişini WhatsApp'tan tek mesajla ver. Ödemeyi kapıda ya da havale/EFT ile yaparsın. Stoklar birkaç saatte bir güncellenir; gördüğün numara stokta demektir.</p>
 </div>
 <ul class="prom">
 <li><b>1</b>Türkiye'nin her yerine ücretsiz kargo</li>
-<li><b>2</b>iyzico ile güvenli kartla ödeme</li>
+<li><b>2</b>Kapıda ödeme ya da havale/EFT</li>
 <li><b>3</b>Numara olmazsa değişim, 14 gün iade hakkı</li>
 </ul>
 </div></header>
@@ -161,7 +162,7 @@ footer p{margin:6px 0 0;opacity:.8}
 <h2>Nasıl sipariş verilir</h2>
 <ol class="steps">
 <li><div class="n">1</div><h3>Seç</h3><p>Ürüne dokun ve stokta olan numaranı işaretle. Silik numaralar tükenmiştir.</p></li>
-<li><div class="n">2</div><h3>Kartla öde</h3><p>"Kartla öde" butonu iyzico'nun güvenli ödeme sayfasını açar. Adresini ve kart bilgini orada girersin.</p></li>
+<li><div class="n">2</div><h3>WhatsApp'tan yaz</h3><p>"Sipariş ver" butonu WhatsApp'ı hazır mesajla açar. Mesajı gönder, adresini yaz; siparişini onaylayalım.</p></li>
 <li><div class="n">3</div><h3>Teslim al</h3><p>Siparişin 1–3 iş günü içinde kargoya verilir, kargo takip bilgisi sana iletilir.</p></li>
 </ol>
 </div></section>
@@ -169,7 +170,7 @@ footer p{margin:6px 0 0;opacity:.8}
 <section class="band" id="teslimat"><div class="wrap">
 <h2>Teslimat ve iade</h2>
 <div class="info">
-<div class="box"><h3>Teslimat</h3><p>Türkiye'nin 81 iline kargo ücretsizdir. Ödeme kredi veya banka kartıyla, iyzico'nun güvenli ödeme sayfasında alınır. Siparişler genellikle 1–3 iş günü içinde kargoya verilir.</p></div>
+<div class="box"><h3>Teslimat</h3><p>Türkiye'nin 81 iline kargo ücretsizdir. Ödemeyi kapıda yapabilirsin. Havale/EFT ile ödersen kapıda ödeme ücreti alınmaz, fiyat daha düşük olur. Siparişler genellikle 1–3 iş günü içinde kargoya verilir.</p></div>
 <div class="box"><h3>Değişim ve iade</h3><p>Numara olmadıysa değişim yapıyoruz. Mesafeli satışta teslimattan sonraki 14 gün içinde giyilmemiş ve kutusunda olan ürünü iade edebilirsin. İade ve değişim için telefon veya e-posta ile ulaşman yeterli.</p></div>
 </div>
 </div></section>
@@ -226,8 +227,21 @@ ${st.length&&!tekBeden(u)?`<span class="sz-mini">Numara: ${esc(st.join(', '))}</
   $('more').hidden=l.length<=limit;
 };
 
+const waSiparis=(b,odeme,fiyat)=>{
+  const sayfa=location.origin+location.pathname+'#u-'+cur.id;
+  const t=`Merhaba, sipariş vermek istiyorum:\n${baslik(cur)}${cur.renk?' ('+cur.renk+')':''}\nÜrün kodu: ${cur.kod||cur.id}${b.b!=='Standart'?'\nNumara: '+b.b:''}\nFiyat: ${tl(fiyat)}\nÖdeme: ${odeme}\n${sayfa}\n\nAd soyad:\nAdres:\nTelefon:`;
+  return 'https://wa.me/'+encodeURIComponent(M.wa)+'?text='+encodeURIComponent(t);
+};
 const payBtn=(b)=>{
   const a=$('pay');if(!a)return;
+  const a2=$('pay2');
+  if(M.wa&&!M.odeme){
+    if(!b||b.s<=0){a.textContent='Önce numaranı seç';a.setAttribute('aria-disabled','true');a.removeAttribute('href');a2.hidden=true;return}
+    const nb=b.b==='Standart'?'':b.b+' numara · ';
+    a.textContent=`${nb}Kapıda ödemeyle sipariş ver ${tl(cur.fiyat)}`;a.href=waSiparis(b,'Kapıda ödeme',cur.fiyat);a.setAttribute('aria-disabled','false');
+    if(M.havale>0){const hf=cur.fiyat-M.havale;a2.hidden=false;a2.textContent=`Havale/EFT ile sipariş ver ${tl(hf)} (${tl(M.havale)} daha ucuz)`;a2.href=waSiparis(b,'Havale/EFT',hf);a2.setAttribute('aria-disabled','false');}
+    return;
+  }
   if(!M.odeme){a.textContent='Kartla ödeme yakında açılıyor';a.setAttribute('aria-disabled','true');a.removeAttribute('href');return}
   if(!b){a.textContent='Önce numaranı seç';a.setAttribute('aria-disabled','true');a.removeAttribute('href');return}
   if(!b.l){a.textContent='Bu numaranın ödemesi hazırlanıyor';a.setAttribute('aria-disabled','true');a.removeAttribute('href');$('hint').textContent='Bu numara birkaç saat içinde satışa açılacak.';return}
@@ -247,7 +261,8 @@ ${tekBeden(u)?'':'<strong>Numara seç</strong>'}
 <div class="sizes"${tekBeden(u)?' hidden':''} role="group" aria-label="Numara">${u.beden.map(b=>`<button class="sz" type="button" data-sz="${esc(b.b)}" ${b.s>0?'':'disabled'} aria-pressed="false" aria-label="${esc(b.b)} numara${b.s>0?'':' tükendi'}">${esc(b.b)}</button>`).join('')}</div>
 <p class="hint" id="hint"></p>
 <a class="big" id="pay" target="_blank" rel="noopener" aria-disabled="true">Önce numaranı seç</a>
-<p class="secure">Güvenli ödeme sayfası iyzico'da açılır. Teslimat adresini orada gireceksin.</p>
+<a class="big alt2" id="pay2" target="_blank" rel="noopener" aria-disabled="true" hidden></a>
+<p class="secure" id="secure">${M.wa?'Sipariş WhatsApp üzerinden alınır. Ödemeyi kapıda ya da havale/EFT ile yaparsın.':'Güvenli ödeme sayfası iyzico\'da açılır. Teslimat adresini orada gireceksin.'}</p>
 <div class="desc">${esc(u.acik||'Ücretsiz kargo ve kolay değişim ile.')}</div></div></div>`;
   payBtn(tekBeden(u)&&u.beden[0].s>0?u.beden[0]:null);
   $('pov').classList.add('on');
@@ -278,7 +293,7 @@ window.addEventListener('hashchange',fromHash);
 const basla=d=>{
   U=d.urunler||[];M=d.meta||{};
   if(M.magaza){document.title=M.magaza;$('fname').textContent=M.magaza;const p=M.magaza.split(' ');$('logo').innerHTML=p.length>1?esc(p[0])+'<span>'+esc(p.slice(1).join(' '))+'</span>':'<span>'+esc(p[0])+'</span>';}
-  $('tel').textContent=M.tel||'';$('eposta').textContent=M.eposta||'';$('epostap').hidden=!M.eposta;$('sehir').textContent=M.sehir?M.sehir+', Türkiye geneline gönderim':'';
+  $('tel').textContent=M.tel||'';if(M.wa){const w=document.createElement('a');w.href='https://wa.me/'+encodeURIComponent(M.wa);w.target='_blank';w.rel='noopener';w.className='big';w.style.cssText='display:inline-flex;width:auto;padding:0 22px;margin-top:10px';w.textContent='WhatsApp\'tan yaz';$('tel').parentNode.after(w);}$('eposta').textContent=M.eposta||'';$('epostap').hidden=!M.eposta;$('sehir').textContent=M.sehir?M.sehir+', Türkiye geneline gönderim':'';
   $('guncel').textContent=M.guncel?'Katalog güncelleme: '+M.guncel:'';
   if(M.test)$('demo').textContent='TEST MODU: Ödemeler iyzico deneme ortamına gider, gerçek para çekilmez. Test kartı: 5528 7900 0000 0008, ileri bir tarih, CVC 123, SMS kodu 123456.';
   $('demo').hidden=!(M.ornek||M.test);

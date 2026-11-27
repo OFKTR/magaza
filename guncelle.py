@@ -463,6 +463,8 @@ def main():
         "tel": AYAR.get("telefon_yazisi", ""),
         "eposta": AYAR.get("eposta", ""),
         "odeme": odeme,
+        "wa": AYAR.get("whatsapp", ""),
+        "havale": AYAR.get("havale_indirimi_tl", 0),
         "test": odeme and os.environ.get("IYZICO_API_KEY", "").strip().startswith("sandbox-"),
         "sehir": AYAR.get("sehir", ""),
         "guncel": datetime.now(tr).strftime("%d.%m.%Y %H:%M"),
