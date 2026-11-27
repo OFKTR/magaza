@@ -38,7 +38,7 @@
   "gizlenecek_kodlar": [],
   "ozel_fiyatlar": { "ORNEKKOD123": 1999 },
 
-  "satis_acik": true,
+  "satis_acik": false,
   "arama_motorundan_gizle": true,
   "taksit": false,
   "iyzico_tur_basina_en_fazla_yeni": 300,
