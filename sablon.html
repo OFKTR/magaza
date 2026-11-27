@@ -229,7 +229,7 @@ ${st.length&&!tekBeden(u)?`<span class="sz-mini">Numara: ${esc(st.join(', '))}</
 
 const waSiparis=(b,odeme,fiyat)=>{
   const sayfa=location.origin+location.pathname+'#u-'+cur.id;
-  const t=`Merhaba, sipariş vermek istiyorum:\n${baslik(cur)}${cur.renk?' ('+cur.renk+')':''}\nÜrün kodu: ${cur.kod||cur.id}${b.b!=='Standart'?'\nNumara: '+b.b:''}\nFiyat: ${tl(fiyat)}\nÖdeme: ${odeme}\n${sayfa}\n\nAd soyad:\nAdres:\nTelefon:`;
+  const t=`Merhaba, sipariş vermek istiyorum:\n${baslik(cur)}${cur.renk?' ('+cur.renk+')':''}\nÜrün kodu: ${cur.kod||cur.id}${b.b!=='Standart'?'\nNumara: '+b.b:''}\nFiyat: ${tl(fiyat)}\nÖdeme: ${odeme}\n${sayfa}`;
   return 'https://wa.me/'+encodeURIComponent(M.wa)+'?text='+encodeURIComponent(t);
 };
 const payBtn=(b)=>{
