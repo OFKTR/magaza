@@ -347,6 +347,27 @@ def fiyat_gecmisi_uygula(urunler):
     sil = (bugun - timedelta(days=45)).isoformat()
     b = bugun.isoformat()
     gecmis = _onceki_veriyi_oku()
+    # Tek seferlik: eski bir yayının arşivindeki fiyatları gerçek tarihiyle geçmişe ekle
+    try:
+        eski = json.load(open(os.path.join(KOK, "eski_urunler.json"), encoding="utf-8"))
+        tarih = open(os.path.join(KOK, "eski_urunler_tarih.txt")).read().strip()
+        on = AYAR.get("kod_on_eki", "NOVER")
+        n = 0
+        for eu in eski.get("urunler", []):
+            i = str(eu.get("id", ""))
+            if not i or not eu.get("fiyat"):
+                continue
+            k = i if i.upper().startswith(on.upper()) else f"{on}{i}"
+            kayit = gecmis.setdefault(k, [])
+            if not any(x[0] == tarih for x in kayit):
+                kayit.append([tarih, int(eu["fiyat"])])
+                kayit.sort()
+                n += 1
+        print(f"Eski yayın arşivinden {n} ürünün {tarih} fiyatı geçmişe eklendi")
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print("UYARI: eski yayın arşivi okunamadı:", e)
     yeni, say = {}, 0
     for u in urunler:
         kayit = [x for x in gecmis.get(u["id"], []) if x[0] >= sil]
