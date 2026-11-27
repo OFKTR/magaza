@@ -28,6 +28,9 @@
   "yuvarla": 50,
   "en_az_stok": 1,
   "psf_goster": false,
+  "indirim_goster": true,
+  "indirim_referans_gun": 10,
+  "indirim_en_az_yuzde": 5,
 
   "sadece_markalar": [],
   "gizlenecek_kategoriler": [],

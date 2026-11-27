@@ -206,9 +206,13 @@ def esitle(urunler, ayar, tum_kodlar):
             print(f"  - {kod} / {beden} numara: {n} adet")
     else:
         print("iyzico SATIŞLAR: henüz satış yok")
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
     sayac = {"yeni": 0, "guncel": 0, "pasif": 0, "aktif": 0, "hata": 0}
+    kilit = threading.Lock()
     deneme = 0
     istenen = set()
+    isler = []  # (tür, ürün, beden, link)
 
     for u in urunler:
         for b in u["beden"]:
@@ -217,42 +221,58 @@ def esitle(urunler, ayar, tum_kodlar):
                 continue
             istenen.add(anahtar)
             it = mevcut.get(anahtar)
-            try:
-                if not it:
-                    if deneme >= limit:
-                        continue
+            if not it:
+                if deneme < limit:
                     deneme += 1
-                    d = istek("POST", "/v2/iyzilink/products", _govde(u, b["b"], b["s"], ayar, True))
-                    b["l"] = d.get("url", "")
-                    sayac["yeni"] += 1
-                    time.sleep(0.1)
-                    continue
+                    isler.append(("yeni", u, b, None))
+                continue
+            b["l"] = it.get("url", "")
+            eski_fiyat = float(it.get("price") or 0)
+            eski_stok = int(it.get("stockCount") or 0)
+            pasif = _durum(it) == "PASSIVE"
+            degisti = abs(eski_fiyat - u["fiyat"]) > 0.009 or eski_stok != b["s"]
+            if pasif or degisti:
+                isler.append(("guncel", u, b, (it, pasif, degisti)))
+    for anahtar, it in mevcut.items():
+        if anahtar not in istenen and _durum(it) != "PASSIVE":
+            isler.append(("kapat", None, None, it))
+
+    def calis(is_):
+        tur, u, b, x = is_
+        try:
+            if tur == "yeni":
+                d = istek("POST", "/v2/iyzilink/products", _govde(u, b["b"], b["s"], ayar, True))
+                b["l"] = d.get("url", "")
+                k = "yeni"
+            elif tur == "guncel":
+                it, pasif, degisti = x
                 tok = it.get("token")
-                if _durum(it) == "PASSIVE":
+                if pasif:
                     istek("PATCH", f"/v2/iyzilink/products/{tok}/status/ACTIVE")
-                    sayac["aktif"] += 1
-                eski_fiyat = float(it.get("price") or 0)
-                eski_stok = int(it.get("stockCount") or 0)
-                if abs(eski_fiyat - u["fiyat"]) > 0.009 or eski_stok != b["s"]:
+                    with kilit:
+                        sayac["aktif"] += 1
+                if degisti:
                     istek("PUT", f"/v2/iyzilink/products/{tok}", _govde(u, b["b"], b["s"], ayar, False))
-                    sayac["guncel"] += 1
-                    time.sleep(0.15)
-                b["l"] = it.get("url", "")
-            except Exception as e:
+                    with kilit:
+                        sayac["guncel"] += 1
+                return
+            else:
+                istek("PATCH", f"/v2/iyzilink/products/{x.get('token')}/status/PASSIVE")
+                k = "pasif"
+            with kilit:
+                sayac[k] += 1
+        except Exception as e:
+            with kilit:
                 sayac["hata"] += 1
                 if sayac["hata"] <= 20:
                     print("  uyarı:", e)
+            if tur == "guncel" and b is not None:
+                pass  # link açık kalır, fiyat bir sonraki turda yeniden denenir
 
-    # Stoktan çıkan veya katalogdan kalkan numaraların linklerini kapat
-    for anahtar, it in mevcut.items():
-        if anahtar in istenen or _durum(it) == "PASSIVE":
-            continue
-        try:
-            istek("PATCH", f"/v2/iyzilink/products/{it.get('token')}/status/PASSIVE")
-            sayac["pasif"] += 1
-        except Exception as e:
-            sayac["hata"] += 1
-            print("  uyarı:", e)
+    paralel = max(1, int(ayar.get("iyzico_paralel", 6)))
+    print(f"iyzico: {len(isler)} işlem, {paralel} paralel")
+    with ThreadPoolExecutor(max_workers=paralel) as ex:
+        list(ex.map(calis, isler))
 
     print(f"iyzico: {sayac['yeni']} yeni, {sayac['guncel']} güncellenen, {sayac['aktif']} yeniden açılan, "
           f"{sayac['pasif']} kapatılan link, {sayac['hata']} hata")

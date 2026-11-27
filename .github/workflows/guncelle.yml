@@ -27,6 +27,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Onceki yayinin fiyat gecmisini al
+        run: |
+          SITE="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+          curl -fsSL "$SITE/fiyat_gecmisi.json" -o onceki_fiyat_gecmisi.json || rm -f onceki_fiyat_gecmisi.json
+          curl -fsSL "$SITE/urunler.json" -o onceki_urunler.json || rm -f onceki_urunler.json
       - name: Resim donusturucuyu kur
         run: pip install --quiet pillow
       - name: XML'i indir, iyzico linklerini esitle, urunler.json olustur

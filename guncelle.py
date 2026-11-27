@@ -306,6 +306,64 @@ def kaynak_oku(kok, urunler, atlanan, ornek_kar, tum_kodlar, kural_ref, gorulen_
     print(f"{KAYNAK.get('ad', 'Tedarikçi')}: {len(urunler) - once} ürün eklendi")
 
 
+def _onceki_veriyi_oku():
+    """Bir önceki yayının fiyat geçmişini (iş akışı indirir) okur.
+    Geçmiş dosyası yoksa yayındaki urunler.json'daki fiyatlarla başlatır."""
+    gecmis = {}
+    try:
+        gecmis = json.load(open(os.path.join(KOK, "onceki_fiyat_gecmisi.json"), encoding="utf-8"))
+    except Exception:
+        pass
+    if gecmis:
+        return gecmis
+    try:
+        eski = json.load(open(os.path.join(KOK, "onceki_urunler.json"), encoding="utf-8"))
+        g = eski.get("meta", {}).get("guncel", "")
+        tarih = datetime.strptime(g, "%d.%m.%Y %H:%M").strftime("%Y-%m-%d")
+        on = AYAR.get("kod_on_eki", "NOVER")
+        for u in eski.get("urunler", []):
+            i = str(u.get("id", ""))
+            if not i or not u.get("fiyat"):
+                continue
+            k = i if i.upper().startswith(on.upper()) else f"{on}{i}"
+            gecmis[k] = [[tarih, int(u["fiyat"])]]
+        print(f"Fiyat geçmişi yayındaki sürümden başlatıldı ({len(gecmis)} ürün, {tarih})")
+    except Exception:
+        pass
+    return gecmis
+
+
+def fiyat_gecmisi_uygula(urunler):
+    """Her ürünün günlük fiyatını kaydeder. Bugünkü fiyat, bugünden önceki son 10 günün
+    en düşük fiyatından düşükse o fiyatı üstü çizili 'eski fiyat' olarak gösterir
+    (Ticari Reklam ve Haksız Ticari Uygulamalar Yönetmeliği, 10 gün kuralı)."""
+    if not AYAR.get("indirim_goster", True):
+        return 0
+    gun_say = AYAR.get("indirim_referans_gun", 10)
+    en_az = AYAR.get("indirim_en_az_yuzde", 5)
+    tr = timezone(timedelta(hours=3))
+    bugun = datetime.now(tr).date()
+    bas = (bugun - timedelta(days=gun_say)).isoformat()
+    sil = (bugun - timedelta(days=45)).isoformat()
+    b = bugun.isoformat()
+    gecmis = _onceki_veriyi_oku()
+    yeni, say = {}, 0
+    for u in urunler:
+        kayit = [x for x in gecmis.get(u["id"], []) if x[0] >= sil]
+        onceki = [x[1] for x in kayit if bas <= x[0] < b]
+        kayit = [x for x in kayit if x[0] != b] + [[b, min([u["fiyat"]] + [x[1] for x in kayit if x[0] == b])]]
+        yeni[u["id"]] = kayit
+        ref = min(onceki) if onceki else 0
+        if ref > u["fiyat"] and (1 - u["fiyat"] / ref) * 100 >= en_az:
+            u["psf"] = int(ref)
+            say += 1
+        elif not AYAR.get("psf_goster", False):
+            u["psf"] = 0
+    with open(os.path.join(KOK, "site", "fiyat_gecmisi.json"), "w", encoding="utf-8") as f:
+        json.dump(yeni, f, separators=(",", ":"))
+    return say
+
+
 def main():
     global KAYNAK
     urunler, atlanan, ornek_kar = [], {"stoksuz": 0, "fiyatsiz": 0, "gizli": 0, "ucuz": 0}, []
@@ -353,6 +411,10 @@ def main():
     for u in urunler:
         u.pop("kod", None)
         u.pop("barkod", None)
+
+    indirim_say = fiyat_gecmisi_uygula(urunler)
+    if indirim_say:
+        print(f"Gerçek indirim etiketi alan ürün: {indirim_say} (son 10 günün en düşük fiyatına göre)")
 
     tr = timezone(timedelta(hours=3))
     meta = {
