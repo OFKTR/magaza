@@ -425,6 +425,8 @@ def cinsiyete_gore_ayir(urunler):
         u["kat"] = f"{cins} {tur}".strip()
         say[cins] += 1
     print(f"Cinsiyet: {say['Kadın']} kadın, {say['Erkek']} erkek, {say['']} belirsiz")
+    for u in [u for u in urunler if not u["cins"]][:40]:
+        print(f"  belirsiz: {u['kat']} | {u['ad']}")
 
 
 def main():
