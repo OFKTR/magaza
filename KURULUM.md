@@ -139,3 +139,11 @@ Notlar:
 - Satış fiyatındaki net kâr: ayakkabı 300 TL, bot 350 TL (kategori "Bot"), tişört 50 TL, kemer 150 TL, saat 250 TL.
 - Üstü çizili eski fiyat ve "%X indirim" etiketi otomatik: ürünün son 10 günde sitede uygulanan en düşük fiyatı bugünkünden en az %5 yüksekse gösterilir. Uydurma liste fiyatı kullanılmaz (Ticari Reklam ve Haksız Ticari Uygulamalar Yönetmeliği, 10 gün kuralı).
 - Gerçek bir kampanya yapmak için: Fiyatları (ör. ayakkabıda 500 TL kâr) en az 10 gün sitede uygula, sonra kârı düşür. Etiket kendiliğinden çıkar.
+
+## Kampanya planı (9 Aralık 2026)
+
+- 27 Kasım – 8 Aralık: liste fiyatları (net kâr ayakkabı 500, bot 550, tişört 100 TL).
+- 9 Aralık'tan itibaren otomatik kampanya: ayakkabı ve botta 200 TL, tişörtte 50 TL indirim (net kâr 300 / 350 / 50 TL).
+- İndirim etiketi 9–18 Aralık arasında görünür, sonra fiyat normal fiyat sayılır ve etiket kalkar (10 gün kuralı).
+- Ayar: `ayarlar.json` > `kampanya` (baslangic, indirim_tl) ve kâr kurallarındaki `kampanya_indirim_tl`.
+- Önemli: Liste döneminde müşterilere de bu liste fiyatlarından satış yapılmalı; aksi halde "eski fiyat" gerçeği yansıtmaz.

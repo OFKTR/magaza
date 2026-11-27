@@ -9,12 +9,13 @@
   "eposta": "",
   "sehir": "Çorum",
 
-  "net_kar_tl": 300,
+  "net_kar_tl": 500,
+  "kampanya": { "baslangic": "2026-12-09", "indirim_tl": 200 },
   "kar_kurallari": [
-    { "icerir": ["TİŞÖRT", "TISORT", "T-SHIRT", "TSHIRT"], "net_kar_tl": 50 },
+    { "icerir": ["TİŞÖRT", "TISORT", "T-SHIRT", "TSHIRT"], "net_kar_tl": 100, "kampanya_indirim_tl": 50 },
     { "icerir": ["KEMER"], "net_kar_tl": 150 },
     { "icerir": ["KOL SAATİ", "KOLSAATI", "SAAT"], "net_kar_tl": 250 },
-    { "kategori": ["Bot", "Çizme"], "net_kar_tl": 350 }
+    { "kategori": ["Bot", "Çizme"], "net_kar_tl": 550, "kampanya_indirim_tl": 200 }
   ],
 
   "kaynaklar": [

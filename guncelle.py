@@ -83,15 +83,29 @@ def _sade(s):
 KAYNAK = {}  # o an okunan tedarikçinin ayarları
 
 
+def kampanya_aktif():
+    """ayarlar.json > kampanya > baslangic tarihinden itibaren (Türkiye saati) True."""
+    k = AYAR.get("kampanya") or {}
+    if not k.get("baslangic"):
+        return False
+    bugun = os.environ.get("KAMPANYA_TEST_TARIH") or datetime.now(timezone(timedelta(hours=3))).date().isoformat()
+    return bugun >= k["baslangic"] and (not k.get("bitis") or bugun <= k["bitis"])
+
+
 def net_kar(ad="", kat=""):
-    """Önce ürün adına göre kâr kuralı, sonra tedarikçinin kârı, en son genel kâr."""
+    """Liste kârı: önce ürün kuralı, sonra tedarikçi, en son genel kâr.
+    Kampanya günlerinde kuralın (yoksa genelin) kampanya indirimi düşülür."""
     metin = _sade(f"{ad} {kat}")
+    kar, ind = None, None
     for kural in AYAR.get("kar_kurallari", []):
-        if any(_sade(k) in metin for k in kural.get("icerir", [])):
-            return kural["net_kar_tl"]
-        if _sade(kat) and _sade(kat) in {_sade(k) for k in kural.get("kategori", [])}:
-            return kural["net_kar_tl"]
-    return KAYNAK.get("net_kar_tl", AYAR.get("net_kar_tl", AYAR.get("kar_tl", 500)))
+        if (any(_sade(k) in metin for k in kural.get("icerir", []))
+                or (_sade(kat) and _sade(kat) in {_sade(k) for k in kural.get("kategori", [])})):
+            kar, ind = kural["net_kar_tl"], kural.get("kampanya_indirim_tl", 0)
+            break
+    if kar is None:
+        kar = KAYNAK.get("net_kar_tl", AYAR.get("net_kar_tl", AYAR.get("kar_tl", 500)))
+        ind = (AYAR.get("kampanya") or {}).get("indirim_tl", 0)
+    return kar - (ind if kampanya_aktif() else 0)
 
 
 def _kdv(kdv):
@@ -279,7 +293,7 @@ def kaynak_oku(kok, urunler, atlanan, ornek_kar, tum_kodlar, kural_ref, gorulen_
             continue
         fiyat = satis_fiyati(alis, kod, isim, kat, kdv)
         ornek_kar.append(cebe_kalan(fiyat, alis, kdv))
-        if net_kar(isim, kat) != AYAR.get("net_kar_tl", 500):
+        if net_kar(isim, kat) != AYAR.get("net_kar_tl", 500) - ((AYAR.get("kampanya") or {}).get("indirim_tl", 0) if kampanya_aktif() else 0):
             kural_ref[0] += 1
         psf = sayi(bul(el, ET_["psf"]))
         skod = on_ekli(kod)
@@ -345,6 +359,8 @@ def fiyat_gecmisi_uygula(urunler):
     en_az = AYAR.get("indirim_en_az_yuzde", 5)
     tr = timezone(timedelta(hours=3))
     bugun = datetime.now(tr).date()
+    if os.environ.get("KAMPANYA_TEST_TARIH"):
+        bugun = datetime.strptime(os.environ["KAMPANYA_TEST_TARIH"], "%Y-%m-%d").date()
     bas = (bugun - timedelta(days=gun_say)).isoformat()
     sil = (bugun - timedelta(days=45)).isoformat()
     b = bugun.isoformat()
@@ -435,6 +451,8 @@ def main():
         u.pop("kod", None)
         u.pop("barkod", None)
 
+    if AYAR.get("kampanya", {}).get("baslangic"):
+        print(f"Kampanya ({AYAR['kampanya']['baslangic']}): {'AKTİF' if kampanya_aktif() else 'henüz başlamadı, liste fiyatları uygulanıyor'}")
     indirim_say = fiyat_gecmisi_uygula(urunler)
     if indirim_say:
         print(f"Gerçek indirim etiketi alan ürün: {indirim_say} (son 10 günün en düşük fiyatına göre)")
