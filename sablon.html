@@ -194,6 +194,7 @@ const cizim=u=>{const r=norm(u.renk).split(/[\/\s,-]+/).filter(Boolean);const up
 const gorsel=(u,i=0)=>u.resim&&u.resim[i]?`<img src="${esc(u.resim[i])}" alt="${esc(u.ad)}" loading="lazy" data-u="${esc(u.id)}">`:cizim(u);
 const ind=u=>u.psf>u.fiyat?Math.round((1-u.fiyat/u.psf)*100):0;
 const baslik=u=>String(u.ad).replace(/^\S+\s+-\s+/,'');
+const renkler=u=>{const d=U.filter(x=>x.model&&x.model===u.model&&x.id!==u.id);return d.length?`<div class="code" style="margin-top:10px">Diğer renkler</div><div class="sizes" style="margin-top:6px">${d.map(x=>`<button class="sz" type="button" data-renk="${esc(x.id)}">${esc(x.renk||baslik(x))}</button>`).join('')}</div>`:''};
 const tekBeden=u=>u.beden.length===1&&u.beden[0].b==='Standart';
 
 let U=[],M={},cat='Tümü',q='',sort='on',limit=24,cur=null;
@@ -201,7 +202,7 @@ let U=[],M={},cat='Tümü',q='',sort='on',limit=24,cur=null;
 document.addEventListener('error',e=>{const t=e.target;if(t.tagName==='IMG'&&t.dataset.u){const u=U.find(x=>x.id===t.dataset.u);if(u){const d=document.createElement('div');d.style.cssText='display:grid;place-items:center;width:100%;height:100%';d.innerHTML=cizim(u);t.replaceWith(d)}}},true);
 
 const liste=()=>{
-  let l=U.filter(u=>(cat==='Tümü'||u.kat===cat)&&(!q||norm(u.kod+' '+u.ad+' '+u.renk+' '+u.marka).includes(q)));
+  let l=U.filter(u=>(cat==='Tümü'||u.kat===cat)&&(!q||norm(u.skod+' '+u.model+' '+u.ad+' '+u.renk+' '+u.marka).includes(q)));
   if(sort==='ucuz')l=[...l].sort((a,b)=>a.fiyat-b.fiyat);
   if(sort==='pahali')l=[...l].sort((a,b)=>b.fiyat-a.fiyat);
   if(sort==='stok')l=[...l].sort((a,b)=>b.stok-a.stok);
@@ -217,7 +218,7 @@ const drawGrid=()=>{
   $('count').textContent=l.length+' model listeleniyor';
   $('grid').innerHTML=l.length?l.slice(0,limit).map(u=>{const st=u.beden.filter(b=>b.s>0).map(b=>b.b);return `<button class="card" type="button" data-u="${esc(u.id)}">
 <div class="shelf">${gorsel(u)}<span class="tag">${esc(u.kat)}</span>${ind(u)?`<span class="off">%${ind(u)}</span>`:''}</div>
-<div class="body"><span class="code">${esc(u.marka?u.marka+' · ':'')}${esc(u.kod.split(/[^A-Z0-9]/i)[0]||u.kod)}</span><h3>${esc(baslik(u))}</h3>
+<div class="body"><span class="code">${esc(u.marka?u.marka+' · ':'')}${esc(u.model||u.skod)}</span><h3>${esc(baslik(u))}</h3>
 ${st.length&&!tekBeden(u)?`<span class="sz-mini">Numara: ${esc(st.join(', '))}</span>`:''}
 <div class="pr"><span class="price">${tl(u.fiyat)}</span>${u.psf?`<span class="old">${tl(u.psf)}</span>`:''}</div></div></button>`}).join(''):'<div class="empty">Bu aramayla eşleşen model yok.</div>';
   $('more').hidden=l.length<=limit;
@@ -234,10 +235,11 @@ const openU=id=>{
   const u=U.find(x=>x.id===id);if(!u)return;cur=u;
   const imgs=u.resim&&u.resim.length?u.resim.map((_,i)=>`<div>${gorsel(u,i)}</div>`).join(''):`<div>${cizim(u)}</div>`;
   const n=Math.max(1,(u.resim||[]).length);
-  $('pbox').innerHTML=`<div class="sh-h"><span class="code">${esc(u.marka||'')} · ${esc(u.kod)}</span><button class="x" data-close="1" type="button" aria-label="Kapat">×</button></div>
+  $('pbox').innerHTML=`<div class="sh-h"><span class="code">${esc(u.marka||'')} · Ürün kodu: ${esc(u.skod)}</span><button class="x" data-close="1" type="button" aria-label="Kapat">×</button></div>
 <div class="det"><div><div class="gal" id="gal">${imgs}</div>${n>1?`<div class="gnav"><button type="button" data-g="-1" aria-label="Önceki fotoğraf">‹</button><span>${n} fotoğraf</span><button type="button" data-g="1" aria-label="Sonraki fotoğraf">›</button></div>`:''}</div>
 <div><h2 id="pt" style="font-size:clamp(24px,3vw,32px);margin-bottom:8px">${esc(baslik(u))}</h2>
 ${u.renk?`<div class="code">Renk: ${esc(u.renk)}</div>`:''}
+${renkler(u)}
 <div class="pr" style="margin:10px 0 14px"><span class="price" style="font-size:28px">${tl(u.fiyat)}</span>${u.psf?`<span class="old">${tl(u.psf)}</span>`:''}<span class="sz-mini">Kargo ücretsiz</span></div>
 ${tekBeden(u)?'':'<strong>Numara seç</strong>'}
 <div class="sizes"${tekBeden(u)?' hidden':''} role="group" aria-label="Numara">${u.beden.map(b=>`<button class="sz" type="button" data-sz="${esc(b.b)}" ${b.s>0?'':'disabled'} aria-pressed="false" aria-label="${esc(b.b)} numara${b.s>0?'':' tükendi'}">${esc(b.b)}</button>`).join('')}</div>
@@ -255,6 +257,7 @@ document.addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;
   if(t.dataset.cat!==undefined){cat=t.dataset.cat;limit=24;drawCats();drawGrid();}
   else if(t.classList.contains('card')){openU(t.dataset.u);}
+  else if(t.dataset.renk){openU(t.dataset.renk);}
   else if(t.dataset.sz!==undefined){document.querySelectorAll('.sz').forEach(b=>b.setAttribute('aria-pressed',b===t));$('hint').textContent='';const b=cur.beden.find(x=>x.b===t.dataset.sz);if(b&&b.s<=2)$('hint').textContent='Bu numaradan son '+b.s+' çift kaldı.';payBtn(b);}
   else if(t.dataset.g){const g=$('gal');g.scrollBy({left:g.clientWidth*(+t.dataset.g),behavior:'smooth'});}
   else if(t.id==='more'){limit+=24;drawGrid();}

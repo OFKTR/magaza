@@ -169,6 +169,38 @@ def bedenler(el, toplam_stok):
     return [{"b": k, "s": birlesik[k]} for k in sorted(birlesik, key=sirala)]
 
 
+def on_ekli(kod):
+    """Bayi kuralı: kodların başına en az 5 haneli ön ek (ör. NOVER)."""
+    on = AYAR.get("kod_on_eki", "NOVER")
+    if not kod or kod == "0":
+        return ""
+    return kod if kod.upper().startswith(on.upper()) else f"{on}{kod}"
+
+
+def _harf_esnek(s):
+    """Marka adını büyük/küçük ve İ/I/ı/i farkı gözetmeden yakalayan düzenli ifade."""
+    out = ""
+    for ch in s:
+        if ch in "İIıi":
+            out += "[İIıii̇]"
+        else:
+            out += f"[{re.escape(ch.upper())}{re.escape(ch.lower())}]" if ch.isalpha() else re.escape(ch)
+    return out
+
+
+def marka_temizle(s, xml_marka=""):
+    """Tedarikçinin marka adlarını metinden siler (bayi kuralı: XML markası kullanılmaz)."""
+    adlar = set(AYAR.get("gizlenecek_marka_adlari", []))
+    if xml_marka and xml_marka.upper() not in (AYAR.get("marka", ""), ""):
+        adlar.add(xml_marka)
+    for a in sorted(adlar, key=len, reverse=True):
+        if a.strip():
+            s = re.sub(r"(?<!\w)" + _harf_esnek(a.strip()) + r"(?!\w)", "", s)
+    s = re.sub(r"[ \t]{2,}", " ", s)
+    s = re.sub(r"(^|\n)[ \t]*[-–·,:]+[ \t]*", r"\1", s)
+    return s.strip()
+
+
 def tr_baslik(s):
     s = s.replace("İ", "i").replace("I", "ı").lower()
     return " ".join(w[:1].replace("i", "İ").replace("ı", "I").upper() + w[1:] for w in s.split())
@@ -248,23 +280,28 @@ def kaynak_oku(kok, urunler, atlanan, ornek_kar, tum_kodlar, kural_ref, gorulen_
         if net_kar(isim, kat) != AYAR.get("net_kar_tl", 500):
             kural_ref[0] += 1
         psf = sayi(bul(el, ET_["psf"]))
-        uid = re.sub(r"[^A-Za-z0-9-]", "", kod) or str(len(urunler))
+        skod = on_ekli(kod)
+        model = on_ekli(bul(el, ET_.get("model", [])) or kod)
+        uid = re.sub(r"[^A-Za-z0-9-]", "", skod) or str(len(urunler))
         if uid in gorulen_id:
             uid = f"{uid}-{len(urunler)}"
         gorulen_id.add(uid)
         urunler.append({
             "id": uid,
-            "kod": kod,
-            "ad": isim,
+            "kod": kod,          # bayinin ham kodu: yalnızca iyzico eşleştirmesi için, sitede gösterilmez
+            "skod": skod,        # sitede görünen ürün kodu (ön ekli)
+            "model": model,      # ön ekli model kodu (Mpn): aynı modelin renklerini birbirine bağlar
+            "barkod": on_ekli(bul(el, ET_.get("barkod", []))),
+            "ad": marka_temizle(isim, marka),
             "kat": kat,
-            "marka": marka,
+            "marka": AYAR.get("marka", AYAR["magaza_adi"]),
             "renk": bul(el, ET_["renk"], derin=True),
             "fiyat": fiyat,
             "psf": int(psf) if AYAR.get("psf_goster", False) and psf > fiyat else 0,
             "resim": resimler(el),
             "beden": bd,
             "stok": toplam,
-            "acik": temiz_aciklama(bul(el, ET_["aciklama"], derin=True)),
+            "acik": marka_temizle(temiz_aciklama(bul(el, ET_["aciklama"], derin=True)), marka),
         })
     print(f"{KAYNAK.get('ad', 'Tedarikçi')}: {len(urunler) - once} ürün eklendi")
 
@@ -311,6 +348,11 @@ def main():
     except Exception as e:
         print("UYARI: iyzico eşitlemesi tamamlanamadı:", e)
         odeme = any(b.get("l") for u in urunler for b in u["beden"])
+
+    # Bayinin ham kodu ve barkod sadece burada (iyzico eşleştirmesi) lazım; siteye gitmez.
+    for u in urunler:
+        u.pop("kod", None)
+        u.pop("barkod", None)
 
     tr = timezone(timedelta(hours=3))
     meta = {

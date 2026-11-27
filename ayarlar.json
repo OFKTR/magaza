@@ -1,5 +1,10 @@
 {
   "magaza_adi": "NOVER",
+
+  "_bayi_kurallari": "Bayi talimatı: XML'deki marka sitede görünmez, her ürün bu markayla satılır; model kodu, ürün kodu ve barkodun başına en az 5 haneli ön ek eklenir.",
+  "marka": "NOVER",
+  "kod_on_eki": "NOVER",
+  "gizlenecek_marka_adlari": ["CHEKICH", "MOOİEN", "MOOIEN"],
   "telefon_yazisi": "0555 000 00 00",
   "eposta": "",
   "sehir": "Çorum",
@@ -18,7 +23,7 @@
   ],
   "kargo_payi_tl": 0,
   "odeme_komisyon_yuzde": 4,
-  "alis_kdv_dahil": false,
+  "alis_kdv_dahil": true,
   "kdv_orani": 10,
   "yuvarla": 50,
   "en_az_stok": 1,
@@ -36,6 +41,8 @@
 
   "etiketler": {
     "urun":     ["Product", "Urun", "Item"],
+    "model":    ["Mpn", "ModelKodu", "ModelCode"],
+    "barkod":   ["Barcode", "Barkod", "Gtin"],
     "kod":      ["Product_code", "UrunKodu", "StokKodu", "ModelKodu", "Kod", "ProductCode", "Sku"],
     "ad":       ["Name", "UrunAdi", "Adi", "ProductName", "Title"],
     "alis":     ["buying_price", "BayiFiyati", "AlisFiyati", "DealerPrice"],
